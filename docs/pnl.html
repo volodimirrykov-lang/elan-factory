@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ELAN Factory · P&L</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div class="logo">ELAN FACTORY</div>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
   <nav>
     <a href="index.html">Cockpit</a>
     <a href="pnl.html" class="active">P&amp;L</a>
@@ -16,111 +19,142 @@
     <a href="products.html">Продукты</a>
     <a href="capex.html">CAPEX</a>
     <a href="cashflow.html">Cash</a>
-    <a href="path.html">→ $1B</a>
-    <a href="brain.html">🧠 Brain</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
   </nav>
+  <span class="pill-date" id="headerDate"></span>
 </header>
 
 <main>
-  <h1>P&amp;L — помесячный разбор</h1>
-  <div class="subtitle">Cash-basis P&L в EUR. Динамика февраль → март 2026 показывает восстановление после переезда на новую фабрику.</div>
+  <h1>Profit &amp; <em>Loss</em></h1>
+  <p class="subtitle">Помесячная cash-basis картина. Февраль 2026 — переезд на новую фабрику. Март — первый месяц восстановления.</p>
 
-  <h2>Полный P&L по месяцам (EUR)</h2>
+  <h2>Полный P&amp;L по месяцам</h2>
   <div class="card">
     <table id="pnlTable">
       <thead><tr>
         <th>Статья</th>
         <th class="num">Февраль 2026</th>
         <th class="num">Март 2026</th>
-        <th class="num">Δ март vs февраль</th>
+        <th class="num">Δ</th>
       </tr></thead>
       <tbody></tbody>
     </table>
   </div>
 
-  <h2>Визуализация маржи</h2>
-  <div class="card"><div class="chart-wrap"><canvas id="marginChart"></canvas></div></div>
+  <div class="grid grid-2">
+    <div>
+      <h2>Маржинальность</h2>
+      <div class="card">
+        <div class="chart-wrap"><canvas id="marginChart"></canvas></div>
+      </div>
+    </div>
+    <div>
+      <h2>Структура расходов · Март</h2>
+      <div class="card">
+        <div class="chart-wrap"><canvas id="costBreakdown"></canvas></div>
+      </div>
+    </div>
+  </div>
 
-  <h2>Структура COGS+OpEx (март 2026)</h2>
-  <div class="card"><div class="chart-wrap"><canvas id="costBreakdown"></canvas></div></div>
-
-  <h2>YTD 2026 annual run-rate</h2>
+  <h2>Run-rate по марту (× 12)</h2>
   <div class="card" id="normalizedPnl"></div>
 </main>
 
-<footer>ELAN Factory Dashboard · P&L</footer>
+<footer>
+  <div>ELAN Factory · P&amp;L</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart-theme.js"></script>
 <script src="data.js"></script>
 <script>
 const D = window.ELAN_DATA;
-const fmt = (v, s='€') => (Math.abs(v) >= 1e6 ? (v/1e6).toFixed(2)+'M' : Math.abs(v) >= 1e3 ? (v/1e3).toFixed(1)+'k' : v.toFixed(0)) + s;
-const fmtPct = v => (v*100).toFixed(1) + '%';
+const fmt = window.fmtNum;
+const fmtPct = window.fmtPct;
 
-const m = D.months;
-const [feb, mar] = [m[0], m[1]];
+document.getElementById('headerDate').textContent = D.meta.lastUpdate;
+document.getElementById('updated').textContent = D.meta.lastUpdate;
 
-const row = (label, fn, cls = '', indent = 0) => {
-  const vals = [feb, mar].map(fn);
-  const delta = vals[1] - vals[0];
-  return `<tr class="${cls}">
-    <td style="padding-left:${12 + indent*16}px">${label}</td>
-    <td class="num">${fmt(vals[0])}</td>
-    <td class="num">${fmt(vals[1])}</td>
+const [feb, mar] = D.months;
+
+const row = (label, fn, opts = {}) => {
+  const [v1, v2] = [feb, mar].map(fn);
+  const delta = v2 - v1;
+  const indent = (opts.indent || 0) * 18;
+  const cls = opts.bold ? 'style="font-weight:600"' : '';
+  const labelHtml = opts.bold ? `<strong>${label}</strong>` : label;
+  return `<tr ${cls}>
+    <td style="padding-left: ${12 + indent}px">${labelHtml}</td>
+    <td class="num">${fmt(v1)}</td>
+    <td class="num">${fmt(v2)}</td>
     <td class="num ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td>
+  </tr>`;
+};
+const rowPct = (label, fn) => {
+  const [v1, v2] = [feb, mar].map(fn);
+  return `<tr>
+    <td class="dim" style="padding-left: 30px">${label}</td>
+    <td class="num ${v1 >= 0 ? 'pos' : 'neg'}">${fmtPct(v1)}</td>
+    <td class="num ${v2 >= 0 ? 'pos' : 'neg'}">${fmtPct(v2)}</td>
+    <td class="num dim">—</td>
   </tr>`;
 };
 
 const rows = [
-  row('<strong>Revenue (SATIŞLAR)</strong>', x => x.revenue, 'pill'),
-  row('<strong>COGS</strong>', x => -x.cogs.total),
-  row('↳ Сырьё', x => -x.cogs.raw_materials, '', 1),
-  row('↳ Упаковка', x => -x.cogs.packaging, '', 1),
-  row('↳ Доставка/карго', x => -x.cogs.shipping, '', 1),
-  row('↳ Таможня импорт', x => -x.cogs.customs, '', 1),
-  row('<strong>Gross profit</strong>', x => x.revenue - x.cogs.total),
-  row('Gross margin', x => (x.revenue - x.cogs.total) / Math.max(x.revenue, 1)),
-  row('<strong>OpEx</strong>', x => -x.opex.total),
-  row('↳ Персонал', x => -x.opex.personnel, '', 1),
-  row('↳ Содержание фабрики', x => -x.opex.factory, '', 1),
-  row('↳ Услуги (банк/юр/бух)', x => -x.opex.services, '', 1),
-  row('↳ Прочие/Укр офис', x => -x.opex.other, '', 1),
-  row('<strong>Operating profit</strong>', x => x.opProfit),
-  row('Operating margin', x => x.opMargin),
-  row('CAPEX (cash out, не в P&L)', x => -x.capex),
-  row('Founder injection', x => x.founderInjection),
+  row('Revenue (продажи)', x => x.revenue, { bold: true }),
+  row('COGS', x => -x.cogs.total, { bold: true }),
+  row('Сырьё', x => -x.cogs.raw_materials, { indent: 1 }),
+  row('Упаковка', x => -x.cogs.packaging, { indent: 1 }),
+  row('Доставка / карго', x => -x.cogs.shipping, { indent: 1 }),
+  row('Таможня при импорте', x => -x.cogs.customs, { indent: 1 }),
+  row('Gross profit', x => x.revenue - x.cogs.total, { bold: true }),
+  rowPct('Gross margin', x => (x.revenue - x.cogs.total) / Math.max(x.revenue, 1)),
+  row('OpEx', x => -x.opex.total, { bold: true }),
+  row('Персонал', x => -x.opex.personnel, { indent: 1 }),
+  row('Содержание фабрики', x => -x.opex.factory, { indent: 1 }),
+  row('Услуги (банк/юр/бух)', x => -x.opex.services, { indent: 1 }),
+  row('Прочие + укр. офис', x => -x.opex.other, { indent: 1 }),
+  row('Operating profit', x => x.opProfit, { bold: true }),
+  rowPct('Operating margin', x => x.opMargin),
+  row('CAPEX (cash only)', x => -x.capex, { indent: 0 }),
+  row('Вливания учредителей', x => x.founderInjection),
 ];
-
-// Fix % rows (re-render margins)
-const fixed = rows.map((r, i) => {
-  if (r.includes('Gross margin') || r.includes('Operating margin')) {
-    const pcs = [feb, mar].map(x => i === 7 ? (x.revenue - x.cogs.total) / Math.max(x.revenue, 1) : x.opMargin);
-    return `<tr><td style="padding-left:12px" class="dim">${r.includes('Gross') ? 'Gross margin' : 'Operating margin'}</td>
-      <td class="num ${pcs[0] >= 0 ? 'pos' : 'neg'}">${fmtPct(pcs[0])}</td>
-      <td class="num ${pcs[1] >= 0 ? 'pos' : 'neg'}">${fmtPct(pcs[1])}</td>
-      <td class="num dim">—</td></tr>`;
-  }
-  return r;
-});
-
-document.querySelector('#pnlTable tbody').innerHTML = fixed.join('');
+document.querySelector('#pnlTable tbody').innerHTML = rows.join('');
 
 // Margin chart
 new Chart(document.getElementById('marginChart'), {
   type: 'line',
   data: {
-    labels: m.map(x => x.label),
+    labels: D.months.map(x => x.label),
     datasets: [
-      { label: 'Gross margin %', data: m.map(x => ((x.revenue - x.cogs.total) / Math.max(x.revenue, 1)) * 100), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3 },
-      { label: 'Operating margin %', data: m.map(x => x.opMargin * 100), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', tension: 0.3 },
+      {
+        label: 'Gross margin',
+        data: D.months.map(x => ((x.revenue - x.cogs.total) / Math.max(x.revenue, 1)) * 100),
+        borderColor: CHART_COLORS[0],
+        backgroundColor: ctx => chartGradient(ctx.chart.ctx, CHART_COLORS[0], 300),
+        fill: true,
+        pointBackgroundColor: CHART_COLORS[0],
+      },
+      {
+        label: 'Operating margin',
+        data: D.months.map(x => x.opMargin * 100),
+        borderColor: CHART_COLORS[1],
+        backgroundColor: ctx => chartGradient(ctx.chart.ctx, CHART_COLORS[1], 300),
+        fill: true,
+        pointBackgroundColor: CHART_COLORS[1],
+      },
     ],
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { labels: { color: '#8a98aa' } } },
+    plugins: {
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%` } },
+    },
     scales: {
-      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
-      y: { ticks: { color: '#8a98aa', callback: v => v.toFixed(0) + '%' }, grid: { color: '#243041' } },
+      x: { grid: { display: false } },
+      y: { ticks: { callback: v => v.toFixed(0) + '%' } },
     },
   },
 });
@@ -129,26 +163,24 @@ new Chart(document.getElementById('marginChart'), {
 new Chart(document.getElementById('costBreakdown'), {
   type: 'doughnut',
   data: {
-    labels: ['Таможня импорт', 'Персонал', 'Сырьё', 'Упаковка', 'Доставка', 'Содержание фабрики', 'Услуги', 'Украинский офис+прочие'],
+    labels: ['Таможня', 'Персонал', 'Сырьё', 'Упаковка', 'Услуги', 'Фабрика', 'Доставка', 'Прочие'],
     datasets: [{
-      data: [
-        mar.cogs.customs, mar.opex.personnel, mar.cogs.raw_materials,
-        mar.cogs.packaging, mar.cogs.shipping, mar.opex.factory,
-        mar.opex.services, mar.opex.other,
-      ],
-      backgroundColor: ['#ef4444', '#f5a524', '#3b82f6', '#a855f7', '#ec4899', '#22c55e', '#eab308', '#6b7280'],
+      data: [mar.cogs.customs, mar.opex.personnel, mar.cogs.raw_materials, mar.cogs.packaging, mar.opex.services, mar.opex.factory, mar.cogs.shipping, mar.opex.other],
+      backgroundColor: CHART_COLORS,
+      borderWidth: 2,
+      borderColor: '#0f0f11',
     }],
   },
   options: {
-    responsive: true, maintainAspectRatio: false,
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
     plugins: {
-      legend: { position: 'right', labels: { color: '#8a98aa', font: { size: 11 } } },
-      tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.raw)} (${((ctx.raw / (mar.cogs.total + mar.opex.total))*100).toFixed(1)}%)` } },
+      legend: { position: 'right', align: 'center' },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.raw)} · ${((ctx.raw / (mar.cogs.total + mar.opex.total)) * 100).toFixed(1)}%` } },
     },
   },
 });
 
-// YTD 2026 annualized (by March — restored post-move)
+// Normalized annual
 const nMar = {
   rev: mar.revenue * 12,
   cogs: mar.cogs.total * 12,
@@ -157,13 +189,13 @@ const nMar = {
 };
 document.getElementById('normalizedPnl').innerHTML = `
   <div class="grid grid-4">
-    <div class="kpi"><div class="label">Annual revenue (март × 12)</div><div class="value">${fmt(nMar.rev)}</div><div class="sub">run-rate по марту</div></div>
-    <div class="kpi"><div class="label">Annual COGS</div><div class="value">${fmt(nMar.cogs)}</div></div>
-    <div class="kpi"><div class="label">Annual OpEx</div><div class="value">${fmt(nMar.opex)}</div></div>
-    <div class="kpi"><div class="label">Annual Op Profit</div><div class="value ${nMar.op >= 0 ? 'pos' : 'neg'}">${fmt(nMar.op)}</div><div class="sub">${fmtPct(mar.opMargin)} margin</div></div>
+    <div class="kpi"><div class="label">Годовая выручка</div><div class="value">${fmt(nMar.rev)}</div><div class="sub">март × 12</div></div>
+    <div class="kpi"><div class="label">Годовой COGS</div><div class="value">${fmt(nMar.cogs)}</div></div>
+    <div class="kpi"><div class="label">Годовой OpEx</div><div class="value">${fmt(nMar.opex)}</div></div>
+    <div class="kpi"><div class="label">Годовой Op Profit</div><div class="value ${nMar.op >= 0 ? 'pos' : 'neg'}">${fmt(nMar.op)}</div><div class="sub">${fmtPct(mar.opMargin)}</div></div>
   </div>
-  <div class="callout">
-    <strong>Март 2026 annualized:</strong> €${(nMar.rev/1000).toFixed(0)}k revenue, но op margin отрицательный из-за большого таможенного бэклога (€54k в марте). После нормализации таможни (IPR) картина вернётся к прибыли.
+  <div class="callout amber" style="margin-top: var(--space-4)">
+    Март 2026 annualized: €${(nMar.rev / 1000).toFixed(0)}k выручка, отрицательный op margin из-за единовременного таможенного бэклога (€54k в марте). После нормализации через IPR ожидаем возврат к позитивной марже.
   </div>`;
 </script>
 </body>

@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ELAN Factory · Продукты</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div class="logo">ELAN FACTORY</div>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
   <nav>
     <a href="index.html">Cockpit</a>
     <a href="pnl.html">P&amp;L</a>
@@ -16,101 +19,106 @@
     <a href="products.html" class="active">Продукты</a>
     <a href="capex.html">CAPEX</a>
     <a href="cashflow.html">Cash</a>
-    <a href="path.html">→ $1B</a>
-    <a href="brain.html">🧠 Brain</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
   </nav>
+  <span class="pill-date" id="headerDate"></span>
 </header>
 
 <main>
-  <h1>Продукты · юнит-экономика</h1>
-  <div class="subtitle">Маржа по брендам: стоимость наполнения vs отпускная цена (цена продукта). Данные из ведомости отгрузок март 2026.</div>
+  <h1>Продукты · <em>юнит-экономика</em></h1>
+  <p class="subtitle">Маржа по брендам: стоимость наполнения vs отпускная цена. Данные из ведомости отгрузок март 2026.</p>
 
-  <h2>Отгрузки по брендам (март 2026)</h2>
+  <h2>Отгрузки по брендам</h2>
   <div class="card">
     <table id="brandsTable">
       <thead><tr>
         <th>Бренд</th>
         <th class="num">SKU</th>
         <th class="num">Units</th>
-        <th class="num">Cost €</th>
-        <th class="num">Price €</th>
+        <th class="num">Cost</th>
+        <th class="num">Price</th>
         <th class="num">Markup</th>
-        <th class="num">Gross €</th>
         <th>Health</th>
       </tr></thead>
       <tbody></tbody>
     </table>
   </div>
 
-  <h2>Margin vs Volume (scatter)</h2>
-  <div class="card"><div class="chart-wrap"><canvas id="scatter"></canvas></div></div>
+  <h2>Margin × Volume</h2>
+  <div class="card"><div class="chart-wrap tall"><canvas id="scatter"></canvas></div></div>
 
-  <h2>Запасы — готовая продукция и сырьё (март 2026)</h2>
+  <h2>Склад · Март 2026</h2>
   <div class="card">
     <table id="invTable">
       <thead><tr>
         <th>Категория</th>
         <th class="num">Units</th>
-        <th class="num">Value €</th>
+        <th class="num">Value</th>
         <th class="num">€/unit</th>
-        <th class="num">% инвентаря</th>
+        <th class="num">% склада</th>
       </tr></thead>
       <tbody></tbody>
     </table>
   </div>
 
   <div class="callout">
-    <strong>Наблюдение:</strong> USUPSO имеет 172% markup — это наиболее прибыльный контракт. LUNESI UK (топ по объёму) только 16% markup — тянет общую маржу вниз. Стратегически нужно либо поднимать цену LUNESI, либо переключать мощности на более маржинальные контракты. Big inventory (€695k) — значит, есть слот для бренда ELAN без новых вложений в упаковку.
+    <strong>USUPSO имеет 172% markup</strong> — самый прибыльный контракт. <strong>LUNESI UK (топ по объёму)</strong> только 16% markup — тянет общую маржу вниз. Стратегически нужно либо поднимать цену LUNESI, либо переключать мощности на более маржинальные контракты. Большой инвентарь (€695k) даёт слот для бренда ELAN без новых вложений в упаковку.
   </div>
 </main>
 
-<footer>ELAN Factory Dashboard · Продукты</footer>
+<footer>
+  <div>ELAN Factory · Продукты</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart-theme.js"></script>
 <script src="data.js"></script>
 <script>
 const D = window.ELAN_DATA;
-const fmt = v => (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0));
-const fmtPct = v => (v*100).toFixed(0) + '%';
+const fmt = window.fmtNum;
+const fmtPct = v => (v * 100).toFixed(0) + '%';
+document.getElementById('headerDate').textContent = D.meta.lastUpdate;
+document.getElementById('updated').textContent = D.meta.lastUpdate;
 
 // Brands table
 document.querySelector('#brandsTable tbody').innerHTML = D.productShipments.map(b => {
-  let health = 'red', pill = 'Низкая маржа';
-  if (b.markup > 1.0) { health = 'green'; pill = 'Отличная'; }
-  else if (b.markup > 0.4) { health = 'amber'; pill = 'Нормальная'; }
-  const gross = b.price - b.cost;
+  let cls = 'red', label = 'низкая маржа';
+  if (b.markup > 1) { cls = 'green'; label = 'отличная'; }
+  else if (b.markup > 0.4) { cls = 'amber'; label = 'нормальная'; }
   return `<tr>
-    <td>${b.brand}</td>
+    <td><strong>${b.brand}</strong></td>
     <td class="num">${b.sku_count}</td>
     <td class="num">${b.units.toLocaleString('ru-RU')}</td>
-    <td class="num">${fmt(b.cost)}€</td>
-    <td class="num">${fmt(b.price)}€</td>
-    <td class="num ${health === 'green' ? 'pos' : health === 'amber' ? 'warn' : 'neg'}">${fmtPct(b.markup)}</td>
-    <td class="num">${fmt(gross)}€</td>
-    <td><span class="pill ${health}">${pill}</span></td>
+    <td class="num">${fmt(b.cost)}</td>
+    <td class="num">${fmt(b.price)}</td>
+    <td class="num ${cls === 'green' ? 'pos' : cls === 'amber' ? 'warn' : 'neg'}">${fmtPct(b.markup)}</td>
+    <td><span class="pill ${cls === 'green' ? 'green' : cls === 'amber' ? 'amber' : 'red'}">${label}</span></td>
   </tr>`;
 }).join('');
 
-// Scatter
+// Scatter: markup vs revenue, size = units
 new Chart(document.getElementById('scatter'), {
-  type: 'scatter',
+  type: 'bubble',
   data: {
-    datasets: [{
-      label: 'Бренд',
-      data: D.productShipments.map(b => ({ x: b.price, y: b.markup * 100, r: Math.sqrt(b.units) / 2, label: b.brand })),
-      backgroundColor: 'rgba(245,165,36,0.5)',
-      borderColor: '#f5a524',
-    }],
+    datasets: D.productShipments.map((b, i) => ({
+      label: b.brand,
+      data: [{ x: b.price, y: b.markup * 100, r: Math.sqrt(b.units) / 3 + 5 }],
+      backgroundColor: CHART_COLORS[i % CHART_COLORS.length] + 'cc',
+      borderColor: CHART_COLORS[i % CHART_COLORS.length],
+      borderWidth: 1.5,
+    })),
   },
   options: {
     responsive: true, maintainAspectRatio: false,
     plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: €${fmt(ctx.raw.x)} / ${ctx.raw.y.toFixed(0)}% markup` } },
+      legend: { position: 'right' },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw.x)} · ${ctx.raw.y.toFixed(0)}% markup` } },
     },
     scales: {
-      x: { title: { text: 'Revenue в марте, €', display: true, color: '#8a98aa' }, ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
-      y: { title: { text: 'Markup %', display: true, color: '#8a98aa' }, ticks: { color: '#8a98aa', callback: v => v + '%' }, grid: { color: '#243041' } },
+      x: { title: { display: true, text: 'Revenue в марте', color: '#71717a' }, ticks: { callback: v => fmt(v) } },
+      y: { title: { display: true, text: 'Markup %', color: '#71717a' }, ticks: { callback: v => v + '%' } },
     },
   },
 });
@@ -129,11 +137,15 @@ document.querySelector('#invTable tbody').innerHTML = items.map(i => `
   <tr>
     <td>${i.name}</td>
     <td class="num">${i.units.toLocaleString('ru-RU')}</td>
-    <td class="num">${fmt(i.value)}€</td>
-    <td class="num dim">${(i.value/i.units).toFixed(2)}</td>
-    <td class="num">${((i.value / inv.total)*100).toFixed(1)}%</td>
-  </tr>
-`).join('') + `<tr><td><strong>ИТОГО</strong></td><td></td><td class="num"><strong>${fmt(inv.total)}€</strong></td><td></td><td class="num">100%</td></tr>`;
+    <td class="num">${fmt(i.value)}</td>
+    <td class="num dim">${(i.value / i.units).toFixed(2)}</td>
+    <td class="num">${((i.value / inv.total) * 100).toFixed(1)}%</td>
+  </tr>`).join('') + `
+  <tr style="font-weight: 600">
+    <td>ИТОГО</td><td></td>
+    <td class="num">${fmt(inv.total)}</td>
+    <td></td><td class="num">100%</td>
+  </tr>`;
 </script>
 </body>
 </html>

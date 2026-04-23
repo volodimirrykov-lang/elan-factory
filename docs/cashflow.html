@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ELAN Factory · Cash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header>
-  <div class="logo">ELAN FACTORY</div>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
   <nav>
     <a href="index.html">Cockpit</a>
     <a href="pnl.html">P&amp;L</a>
@@ -16,96 +19,94 @@
     <a href="products.html">Продукты</a>
     <a href="capex.html">CAPEX</a>
     <a href="cashflow.html" class="active">Cash</a>
-    <a href="path.html">→ $1B</a>
-    <a href="brain.html">🧠 Brain</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
   </nav>
+  <span class="pill-date" id="headerDate"></span>
 </header>
 
 <main>
-  <h1>Cash Flow</h1>
-  <div class="subtitle">ELAN KIMYA (EUR) + Касса учредителя АГ (USD — поступает от другого направления). Вливания учредителей теперь считаем доходом группы (не equity).</div>
+  <h1>Движение <em>денег</em></h1>
+  <p class="subtitle">Два потока: операционный cash flow ELAN KIMYA в EUR + касса учредителя Анны Кравченко (USD) — через неё идут деньги с другого направления бизнеса группы.</p>
 
-  <h2>Касса АГ (другое направление) — помесячно</h2>
-  <div class="card"><div class="chart-wrap"><canvas id="agChart"></canvas></div></div>
+  <h2>Касса АГ Кравченко · другое направление</h2>
+  <div class="card"><div class="chart-wrap tall"><canvas id="agChart"></canvas></div></div>
 
-  <div class="card" style="margin-top:16px">
+  <div class="card" style="margin-top: var(--space-4)">
     <table id="agTable">
-      <thead><tr><th>Месяц</th><th class="num">Приход $</th><th class="num">Расход $</th><th class="num">Ending $</th><th>Note</th></tr></thead>
+      <thead><tr>
+        <th>Месяц</th>
+        <th class="num">Приход</th>
+        <th class="num">Расход</th>
+        <th class="num">Net</th>
+        <th>Заметка</th>
+      </tr></thead>
       <tbody></tbody>
     </table>
   </div>
 
-  <h2>ELAN KIMYA cash (EUR)</h2>
-  <div class="card"><div class="chart-wrap"><canvas id="elanChart"></canvas></div></div>
+  <h2>ELAN KIMYA · операционный cash</h2>
+  <div class="card"><div class="chart-wrap tall"><canvas id="elanChart"></canvas></div></div>
 
   <div class="callout">
-    Если засчитывать <strong>«вливания учредителей» как доход группы</strong> (по вводной пользователя), картина меняется: в марте вместо -€28k получаем +€63k группового cash flow. Но для инвестора/DD это всё равно нужно структурировать как formal loan или revenue из другого направления.
+    Если считать <strong>вливания учредителей как доход группы</strong> (не equity injection, а приход с другого направления по твоей вводной) — картина меняется: в марте вместо −€28k получаем <strong>+€63k</strong> совокупного cash flow. Для DD эту связь нужно будет оформить как внутригрупповую revenue или formal inter-company loan.
   </div>
 </main>
 
-<footer>ELAN Factory Dashboard · Cash</footer>
+<footer>
+  <div>ELAN Factory · Cash</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart-theme.js"></script>
 <script src="data.js"></script>
 <script>
 const D = window.ELAN_DATA;
-const fmt = v => (Math.abs(v) >= 1000 ? (v/1000).toFixed(0) + 'k' : v.toFixed(0));
+const fmt = v => (Math.abs(v) >= 1000 ? (v / 1000).toFixed(0) + 'k' : v.toFixed(0));
+document.getElementById('headerDate').textContent = D.meta.lastUpdate;
+document.getElementById('updated').textContent = D.meta.lastUpdate;
 
-// AG kassa
 new Chart(document.getElementById('agChart'), {
   type: 'bar',
   data: {
     labels: D.agKassa.map(x => x.label),
     datasets: [
-      { label: 'Приход $', data: D.agKassa.map(x => x.in), backgroundColor: '#22c55e' },
-      { label: 'Расход $', data: D.agKassa.map(x => -x.out), backgroundColor: '#ef4444' },
-      { label: 'Net $', type: 'line', data: D.agKassa.map(x => x.in - x.out), borderColor: '#f5a524', backgroundColor: 'rgba(245,165,36,0.2)', tension: 0.3 },
+      { label: 'Приход', data: D.agKassa.map(x => x.in), backgroundColor: CHART_COLORS[0] },
+      { label: 'Расход', data: D.agKassa.map(x => -x.out), backgroundColor: CHART_COLORS[2] },
+      { label: 'Net', type: 'line', data: D.agKassa.map(x => x.in - x.out), borderColor: CHART_COLORS[1], backgroundColor: ctx => chartGradient(ctx.chart.ctx, CHART_COLORS[1], 300), fill: true, pointBackgroundColor: CHART_COLORS[1] },
     ],
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: '#8a98aa' } },
-      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: $${fmt(Math.abs(ctx.raw))}` } },
-    },
-    scales: {
-      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
-      y: { ticks: { color: '#8a98aa', callback: v => '$' + fmt(v) }, grid: { color: '#243041' } },
-    },
+    plugins: { tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: $${fmt(Math.abs(ctx.raw))}` } } },
+    scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => '$' + fmt(v) } } },
   },
 });
 
 document.querySelector('#agTable tbody').innerHTML = D.agKassa.map(x => `
   <tr>
     <td>${x.label}</td>
-    <td class="num pos">${fmt(x.in)}</td>
-    <td class="num neg">${fmt(x.out)}</td>
-    <td class="num ${x.ending >= 0 ? 'pos' : 'neg'}">${fmt(x.ending)}</td>
+    <td class="num pos">$${fmt(x.in)}</td>
+    <td class="num neg">$${fmt(x.out)}</td>
+    <td class="num ${x.ending >= 0 ? 'pos' : 'neg'}">$${fmt(x.ending)}</td>
     <td class="dim">${x.note || ''}</td>
-  </tr>
-`).join('');
+  </tr>`).join('');
 
-// ELAN KIMYA cash
 new Chart(document.getElementById('elanChart'), {
   type: 'bar',
   data: {
     labels: D.months.map(m => m.label),
     datasets: [
-      { label: 'Cash In €', data: D.months.map(m => m.cashIn), backgroundColor: '#22c55e' },
-      { label: 'Cash Out €', data: D.months.map(m => -m.cashOut), backgroundColor: '#ef4444' },
-      { label: 'Net €', type: 'line', data: D.months.map(m => m.cashIn - m.cashOut), borderColor: '#f5a524', tension: 0.3 },
+      { label: 'Cash In', data: D.months.map(m => m.cashIn), backgroundColor: CHART_COLORS[0] },
+      { label: 'Cash Out', data: D.months.map(m => -m.cashOut), backgroundColor: CHART_COLORS[2] },
+      { label: 'Net', type: 'line', data: D.months.map(m => m.cashIn - m.cashOut), borderColor: CHART_COLORS[1], backgroundColor: ctx => chartGradient(ctx.chart.ctx, CHART_COLORS[1], 300), fill: true, pointBackgroundColor: CHART_COLORS[1] },
     ],
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { labels: { color: '#8a98aa' } },
-      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: €${fmt(Math.abs(ctx.raw))}` } },
-    },
-    scales: {
-      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
-      y: { ticks: { color: '#8a98aa', callback: v => '€' + fmt(v) }, grid: { color: '#243041' } },
-    },
+    plugins: { tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: €${fmt(Math.abs(ctx.raw))}` } } },
+    scales: { x: { grid: { display: false } }, y: { ticks: { callback: v => '€' + fmt(v) } } },
   },
 });
 </script>
