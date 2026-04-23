@@ -1,0 +1,11 @@
+{
+  "_comment": "Сценарии exit 2030-2032, привязанные к реальным сделкам L'Oréal. Sum(probability) ≈ 80%, остальное — неучтённые исходы.",
+
+  "scenarios": {
+    "baseline":        {"name": "Baseline · CMO-only (no brand)",     "rev2030": 5000000,   "ebitda2030": 1000000,  "multiple": 8,  "exitValue": 8000000,     "probability": 0.35, "comparable": "Turkish regional CMO acquisitions · 5-8× EBITDA"},
+    "youth_to_people": {"name": "Youth To The People path",           "rev2030": 60000000,  "ebitda2030": 12000000, "multiple": 5,  "exitValue": 300000000,   "probability": 0.25, "comparable": "YTTP · clean beauty · $300-400M exit · in-house production"},
+    "medik8":          {"name": "Medik8 path (самый релевантный)",    "rev2030": 150000000, "ebitda2030": 40000000, "multiple": 25, "exitValue": 1000000000,  "probability": 0.15, "comparable": "Medik8 · derma-skincare · €1B · собственная lab + manufacturing"},
+    "cerave":          {"name": "CeraVe path (derma + pharma base)",  "rev2030": 250000000, "ebitda2030": 50000000, "multiple": 26, "exitValue": 1300000000,  "probability": 0.04, "comparable": "CeraVe · derma + clinical · $1.3B · pharma-grade manufacturing"},
+    "aesop_tier":      {"name": "Aesop-tier (premium + craft)",       "rev2030": 500000000, "ebitda2030": 100000000,"multiple": 25, "exitValue": 2500000000,  "probability": 0.01, "comparable": "Aesop · premium craft · $2.5B · собственная supply chain"}
+  }
+}

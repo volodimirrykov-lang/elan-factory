@@ -1,0 +1,20 @@
+{
+  "_comment": "Текущая оценка группы + целевая (путь к $1B). Обновляется при изменении bases.",
+
+  "currentValuation": 7000000,
+  "targetValuation": 1000000000,
+  "targetYears": [5, 7],
+
+  "valuation": {
+    "method": "Mixed (asset + comparable + brand optionality)",
+    "asOfDate": "2026-04-23",
+    "components": [
+      {"name": "Net tangible assets (CAPEX + inventory - payables)",  "value": 1100000},
+      {"name": "CMO going concern (Jun'25 normalized EBITDA × 8×)",   "value": 3800000},
+      {"name": "Other direction group income ($1M × 3×)",              "value": 1250000},
+      {"name": "Brand optionality (launch May 2026)",                  "value": 2500000}
+    ],
+    "totalLow": 7000000,
+    "totalHigh": 12000000
+  }
+}

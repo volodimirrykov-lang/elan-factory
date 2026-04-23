@@ -219,6 +219,37 @@ def parse(xlsx_path: str, period: str) -> dict:
     return out
 
 
+EXPECTED_LEFT_LABELS = list(LEFT_LABELS.keys()) + list(LEFT_TOTALS.keys())
+EXPECTED_RIGHT_LABELS = list(RIGHT_COST_LABELS.keys())
+# Если парсер нашёл < этих процентов ожидаемых ярлыков — xlsx поменял структуру
+HEALTH_THRESHOLD = 0.7
+
+
+def health_check(data: dict):
+    """Warning если xlsx поменял структуру (меньше ярлыков матчится)."""
+    warnings = []
+    banks_found = len(data.get("banks", {}))
+    expected_banks = len(LEFT_LABELS)
+    if banks_found < expected_banks * HEALTH_THRESHOLD:
+        warnings.append(f"⚠️  Найдено только {banks_found}/{expected_banks} банков — формат xlsx мог измениться")
+
+    totals_found = len(data.get("totals", {}))
+    expected_totals = len(LEFT_TOTALS)  # cash_in, cash_out, revenue, export_total
+    if totals_found < expected_totals * HEALTH_THRESHOLD:
+        warnings.append(f"⚠️  Найдено только {totals_found}/{expected_totals} итогов — проверь заголовки")
+
+    costs_found = len(data.get("costs", {}))
+    if costs_found < 10:  # минимум ожидаем ~10 категорий расходов
+        warnings.append(f"⚠️  Найдено только {costs_found} категорий расходов — проверь col G в xlsx")
+
+    # Sanity: если revenue > 0, должен быть хотя бы один клиент
+    revenue = data.get("totals", {}).get("revenue", 0) or 0
+    if revenue > 1000 and not data.get("clients"):
+        warnings.append(f"⚠️  revenue {revenue:.0f} > 0, но клиентов 0 — блок клиентов не распарсился")
+
+    return warnings
+
+
 def main():
     if len(sys.argv) < 3:
         print("Usage: python parse_raporlar.py <xlsx_path> <YYYY-MM>")
@@ -228,7 +259,15 @@ def main():
         print(f"File not found: {xlsx_path}")
         sys.exit(1)
 
-    data = parse(xlsx_path, period)
+    try:
+        data = parse(xlsx_path, period)
+    except Exception as e:
+        print(f"❌ Parse error: {e}")
+        print(f"   xlsx structure may have changed. Check _raw/ files vs parser patterns.")
+        sys.exit(1)
+
+    for w in health_check(data):
+        print(w)
 
     # Write to data/snapshots/YYYY-MM.json
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

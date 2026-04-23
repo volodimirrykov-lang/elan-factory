@@ -1,0 +1,12 @@
+{
+  "_comment": "Отгрузки Март 2026 с маржой. TODO: автоматизировать из 'Зарплата MONTH.xlsx' (листы C-LAB, BILOBROV, USUPSO, LUNESI*).",
+
+  "productShipments": [
+    {"brand": "USUPSO",           "sku_count": 7,  "units": 6645,  "cost": 8769.60, "price": 23839.82, "markup": 1.72},
+    {"brand": "C-LAB",            "sku_count": 15, "units": 12849, "cost": 8448.35, "price": 12851.52, "markup": 0.52},
+    {"brand": "BILOBROV",         "sku_count": 3,  "units": 1269,  "cost": 6282.80, "price": 9113.28,  "markup": 0.45},
+    {"brand": "LUNESI UK",        "sku_count": 9,  "units": 3644,  "cost": 8503.60, "price": 9848.88,  "markup": 0.16},
+    {"brand": "LUNESI COSMOPROF", "sku_count": 14, "units": 2215,  "cost": 2625.00, "price": 3512.60,  "markup": 0.34},
+    {"brand": "LUNESI UK RAYE",   "sku_count": 14, "units": 380,   "cost": 1000.00, "price": 1054.15,  "markup": 0.05}
+  ]
+}

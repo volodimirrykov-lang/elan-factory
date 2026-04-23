@@ -33,16 +33,53 @@ GitHub Pages ([elan-groupe.github.io/elan-factory](https://elan-groupe.github.io
 ## Архитектура данных (Level 0)
 
 ```
-_raw/                          ← gitignored (xlsx приватные)
-data/constants.json            ← ручные (meta, scenarios, loreal, valuation, payroll, capex)
-data/snapshots/YYYY-MM.json    ← авто из parse_raporlar.py (в git — audit trail)
-data/snapshots/ag_kassa.json   ← авто из parse_kassa_ag.py
-scripts/build_data.py          ← всё → docs/data.js
-docs/data.js                   ← BUILD ARTIFACT, не править руками
-docs/*.html                    ← сайт, потребляет window.ELAN_DATA
+_raw/                              ← gitignored (xlsx приватные)
+data/
+  ├── ops/
+  │   ├── meta.json                ← entity, FX, period + client metadata
+  │   ├── payroll.json             ← payroll snapshot (manual)
+  │   ├── capex.json               ← CAPEX items (manual)
+  │   └── product_shipments.json   ← unit economics per бренд (manual)
+  ├── business/
+  │   ├── valuation.json           ← текущая + целевая оценка
+  │   ├── scenarios.json           ← сценарии exit + L'Oréal paths
+  │   └── comparables.json         ← реальные сделки L'Oréal
+  ├── adjustments/                 ← manual corrections поверх snapshots
+  │   └── YYYY-MM.json             ← field, operation, amount, reason (обязательно!)
+  └── snapshots/                   ← авто из xlsx (в git — audit trail)
+      ├── YYYY-MM.json
+      └── ag_kassa.json
+
+schemas/data_js.schema.json        ← JSON Schema контракт data.js ↔ сайт
+scripts/
+  ├── parse_raporlar.py            ← ИТОГ sheet → snapshot + health check
+  ├── parse_kassa_ag.py            ← 5 monthly sheets → ag_kassa.json
+  └── build_data.py                ← всё → docs/data.js (+ schema validation)
+tests/test_build_data.py           ← unittest, 18 тестов regression
+docs/
+  ├── data.js                      ← BUILD ARTIFACT, не править руками
+  └── *.html                       ← сайт, потребляет window.ELAN_DATA
 ```
 
 Подробнее: `knowledge/02_DATA_ARCHITECTURE.md`.
+
+### Настройка на новом компе
+
+```bash
+git clone https://github.com/elan-groupe/elan-factory.git
+cd elan-factory
+python -m pip install openpyxl jsonschema
+# xlsx-файлы — приватные, получить из Telegram и положить в _raw/
+```
+
+### Регулярные команды
+
+```bash
+python scripts/parse_raporlar.py "_raw/RAPORLAR YYYY MONTH.xlsx" YYYY-MM  # новый месяц
+python scripts/parse_kassa_ag.py  "_raw/УЧЕТ НАЛИЧНЫХ.xlsx"                # обновить kassa
+python scripts/build_data.py                                                # собрать сайт
+python tests/test_build_data.py                                             # regression
+```
 
 ### Workflow нового месяца от бухгалтера
 

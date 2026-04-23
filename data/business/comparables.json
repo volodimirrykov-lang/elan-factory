@@ -1,0 +1,13 @@
+{
+  "_comment": "Реальные сделки L'Oréal последние 10 лет — benchmark для ELAN. Medik8 — anchor (★).",
+
+  "loreal_acquisitions": [
+    {"name": "Aesop",                        "year": 2023, "value": 2530000000, "rev_est": 500000000, "multiple_rev": "5.1×", "note": "Premium craft · own supply chain"},
+    {"name": "CeraVe (+AcneFree, Ambi)",      "year": 2017, "value": 1300000000, "rev_est": 150000000, "multiple_rev": "8.7×", "note": "Pharma/derma manufacturing base (ex-Valeant)"},
+    {"name": "IT Cosmetics",                 "year": 2016, "value": 1200000000, "rev_est": 180000000, "multiple_rev": "6.7×", "note": "Derma + make-up · частично собственное производство"},
+    {"name": "Medik8",                       "year": 2024, "value": 1000000000, "rev_est": 100000000, "multiple_rev": "10×",  "note": "★ Ближе всего: in-house lab + manufacturing"},
+    {"name": "Magic Holdings (China)",       "year": 2014, "value": 840000000,  "rev_est": 150000000, "multiple_rev": "5.6×", "note": "Emerging market · локальное производство"},
+    {"name": "Youth To The People",          "year": 2021, "value": 350000000,  "rev_est": 50000000,  "multiple_rev": "7×",   "note": "Clean beauty · in-house US production"},
+    {"name": "Takami",                       "year": 2024, "value": null,       "rev_est": null,      "multiple_rev": "n/a",  "note": "Medical/dermatology + production · undisclosed"}
+  ]
+}

@@ -1,5 +1,5 @@
 // ELAN KIMYA / ELAN FACTORY — unified data (AUTO-GENERATED)
-// Source: data/snapshots/* (из xlsx) + data/constants.json (ручные данные).
+// Source: data/snapshots/* (xlsx) + data/ops/* + data/business/* (manual).
 // НЕ ПРАВИТЬ ВРУЧНУЮ. Перегенерация: python scripts/build_data.py
 // Built: 2026-04-23
 
@@ -294,6 +294,7 @@ window.ELAN_DATA = {
     }
   ],
   "payroll": {
+    "_comment": "Payroll снапшот Март 2026. TODO: автоматизировать из Зарплата MONTH.xlsx (scripts/parse_payroll.py).",
     "period": "Март 2026",
     "totals": {
       "rate_tl": 1191800,
@@ -521,6 +522,7 @@ window.ELAN_DATA = {
     "total": 694730.25
   },
   "capex": {
+    "_comment": "CAPEX snapshot сен'25-мар'26. TODO: автоматизировать из Расходы_на_стройку.xlsx.",
     "budget": 550000,
     "spent": 485553,
     "remaining_budget": 64447,
@@ -762,6 +764,7 @@ window.ELAN_DATA = {
   ],
   "valuation": {
     "method": "Mixed (asset + comparable + brand optionality)",
+    "asOfDate": "2026-04-23",
     "components": [
       {
         "name": "Net tangible assets (CAPEX + inventory - payables)",

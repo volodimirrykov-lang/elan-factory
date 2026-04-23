@@ -1,0 +1,34 @@
+{
+  "_comment": "Payroll снапшот Март 2026. TODO: автоматизировать из Зарплата MONTH.xlsx (scripts/parse_payroll.py).",
+
+  "period": "Март 2026",
+  "totals": {
+    "rate_tl": 1191800,
+    "comp_tl": 168800,
+    "base_total_tl": 1360600,
+    "bonus_tl": 463478.82,
+    "grand_total_tl": 1824078.82,
+    "grand_total_eur": 35696.27,
+    "sgk_eur": 1384.86,
+    "personnel_opex_eur": 41833.51
+  },
+  "staff": [
+    {"name": "Vitalii Obukhov",  "role": "Экспорт/ВЭД",             "rate": 42640, "comp": 0,    "bonus": 129075.19, "total": 171715.19, "note": "+1.5% export bonus"},
+    {"name": "Taner Esirkış",    "role": "Технолог",                "rate": 44000, "comp": 6000, "bonus": 35314.35,  "total": 85314.35,  "note": "+1.5% export bonus"},
+    {"name": "Larysa Ivanina",   "role": "Technologist / QC",       "rate": 42640, "comp": 0,    "bonus": 40919.93,  "total": 83559.93,  "note": "+0.4% export bonus"},
+    {"name": "Osman Aksu",       "role": "Production manager",      "rate": 44000, "comp": 6000, "bonus": 30000,     "total": 80000},
+    {"name": "Larisa Isakova (UA)","role": "Менеджер Украина",      "rate": 28200, "comp": 6000, "bonus": 41835,     "total": 76035},
+    {"name": "Hidayet Şahin",    "role": "Старший технолог",        "rate": 44000, "comp": 6000, "bonus": 25314.35,  "total": 75314.35,  "note": "+1.5% export bonus"},
+    {"name": "Leyla Uruşanov",   "role": "Production",              "rate": 39000, "comp": 6000, "bonus": 25000,     "total": 70000},
+    {"name": "Tamara Vorobeva",  "role": "Lab / R&D Украина",       "rate": 42640, "comp": 0,    "bonus": 24110,     "total": 66750,     "note": "доплата до $1000"},
+    {"name": "Olena Petik",      "role": "Lab / R&D Украина",       "rate": 42640, "comp": 0,    "bonus": 24110,     "total": 66750,     "note": "доплата до $1500"},
+    {"name": "Emre Altan",       "role": "Production",              "rate": 44000, "comp": 6000, "bonus": 15000,     "total": 65000},
+    {"name": "Vahdettin Bektaş", "role": "Production",              "rate": 28200, "comp": 3800, "bonus": 24000,     "total": 56000},
+    {"name": "Yıldırım Yumuşak", "role": "Production",              "rate": 39000, "comp": 6000, "bonus": 10000,     "total": 55000},
+    {"name": "Evgeniia Altach",  "role": "Админ / менеджер",        "rate": 42640, "comp": 0,    "bonus": 0,         "total": 42640},
+    {"name": "Önder Öz",         "role": "Production",              "rate": 28200, "comp": 3800, "bonus": 8000,      "total": 40000},
+    {"name": "Alina Bastık",     "role": "Production",              "rate": 39000, "comp": 6000, "bonus": 0,         "total": 45000},
+    {"name": "Sabina (UA)",      "role": "Менеджер Украина",        "rate": 28200, "comp": 6000, "bonus": 10800,     "total": 45000}
+  ],
+  "otherStaffCount": 22
+}
