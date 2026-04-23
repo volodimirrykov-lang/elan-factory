@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Brain</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .brain-section { margin: 32px 0; }
+  .brain-section h2 { margin-top: 0; }
+  .fact { background: var(--bg-card); border-left: 3px solid var(--blue); padding: 12px 16px; margin: 8px 0; border-radius: 0 6px 6px 0; }
+  .fact strong { color: var(--accent); }
+  code { background: var(--bg); padding: 1px 6px; border-radius: 3px; color: var(--accent); font-size: 12px; }
+  pre { background: var(--bg); padding: 12px 16px; border-radius: 6px; overflow-x: auto; font-size: 12px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="path.html">→ $250M</a>
+    <a href="brain.html" class="active">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>🧠 Brain — AI Knowledge Base</h1>
+  <div class="subtitle">Специально подготовленная база знаний для ИИ-аналитиков и будущих агентов. Перед любым анализом ELAN Factory — читать ЭТОТ документ.</div>
+
+  <div class="callout">
+    <strong>Принцип №1:</strong> «Не автоматизируй плохой процесс — убери его.» Перед тем как строить отчёт — спроси, нужен ли он.
+  </div>
+
+  <div class="brain-section">
+    <h2>Что это за бизнес</h2>
+    <div class="fact">
+      <strong>ELAN KİMYA Anonim Şirketi</strong> — турецкая A.Ş., contract manufacturer (CMO) в сегменте косметики.
+      Делает продукцию под private label для сторонних брендов + мелкая розница собственного бренда ELAN.
+      Новая фабрика (переехали в феврале 2026 со старой), ~40 человек, GMP/ISO в процессе.
+    </div>
+    <div class="fact">
+      <strong>Группа</strong>: ELAN KİMYA (Турция, производство) + ELAN BEAUTY Spółka (Польша, trading) + ELAN COSMETICS GENERAL TRADING (Дубаи) + ФОП Кравченко (Украина, дистрибьюция). Консолидация отсутствует.
+    </div>
+    <div class="fact">
+      <strong>Цель:</strong> продать группу за $250M через 5-7 лет (2030-2032). Текущая fair value $7-12M. Доля ключевого пользователя сайта — 7% (при $250M = $17.5M).
+    </div>
+    <div class="fact">
+      <strong>В мае 2026 запуск собственного бренда</strong> (шампунь, гель для душа). Это главный value-driver для достижения $250M — без бренда только CMO-оценка upper bound ~$30M.
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Ключевые клиенты (B2B private label)</h2>
+    <div class="fact">
+      <strong>LUNESI LTD (UK)</strong> — топовый внешний клиент. Июнь'25: €60k, март'26: €14k. Несколько суб-контрактов (UK, Cosmoprof, UK RAYE). <em>Маржа 16% markup — низкая.</em>
+    </div>
+    <div class="fact">
+      <strong>USUPSO (Украина)</strong> — Teens Only линейка. Самый маржинальный контракт (<strong>172% markup</strong>). В марте €24k отгрузка.
+    </div>
+    <div class="fact">
+      <strong>C-LAB, BILOBROV, EUPO BELLE, ArteBath (PL), London Lash (UK), BROWED STORE (AU), LUMERA (Oman), Crinie Beauty, AMAZONIKO, CALLUM REA (Швеция)</strong> — внешние бренды.
+    </div>
+    <div class="fact">
+      <strong>Related parties (60% выручки в марте):</strong> ФОП Кравченко (UA), ELAN BEAUTY (PL), ELAN COSMETICS (UAE), Элан Козметик (TR). <em>Риск: инвестор увидит концентрацию на группе как red flag.</em>
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Юнит-экономика брендов (март 2026)</h2>
+    <pre>Бренд            Cost €    Price €   Markup
+USUPSO           8 770     23 840    172% ⭐ best
+C-LAB            8 448     12 852    52%
+BILOBROV         6 283     9 113     45%
+LUNESI COSMOPROF 2 625     3 512     34%
+LUNESI UK        8 504     9 849     16% ⚠️ low
+LUNESI UK RAYE   1 000     1 054     5%  ⚠️ worst</pre>
+    <div class="fact"><strong>Вывод:</strong> при прочих равных производительная мощность должна идти в USUPSO и C-LAB, а не в LUNESI. Нужно либо ренегосировать LUNESI, либо уменьшать его долю.</div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Финансовая точка отсчёта</h2>
+    <div class="fact">
+      <strong>Июнь 2025 — benchmark стационарного режима:</strong> Revenue €107 308, OpEx €71 343, Operating profit <strong>+€35 965 (+33% margin)</strong>, от учредителей только €500.
+      Это значит в нормальном режиме завод <em>прибыльный сам по себе</em>. Annualized: €430k op profit.
+    </div>
+    <div class="fact">
+      <strong>Февраль 2026 — переезд:</strong> выручка почти 0 (€3 673), CAPEX €87k, OpEx €192k. Это <em>разовая просадка</em>, не структурная проблема.
+    </div>
+    <div class="fact">
+      <strong>Март 2026 — восстановление:</strong> Revenue €110 593 (вернулся на уровень июня'25), но маржа отрицательная из-за большой таможни на импорт (€53k — бэклог сырья/упаковки после переезда).
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Главные якоря стоимости</h2>
+    <div class="fact">
+      <strong>Якорь 1 — Таможня при импорте.</strong> В июне €3k, в марте €53k. Главный переменный якорь COGS.
+      <em>Рычаг:</em> режим Inward Processing Relief (İhracat Rejimi) в Турции — позволяет не платить таможню на сырьё, если продукция идёт на экспорт. Потенциальная экономия: до 40% COGS в пиковые месяцы.
+    </div>
+    <div class="fact">
+      <strong>Якорь 2 — Персонал.</strong> 25-42k EUR/мес (с SGK). При росте выручки растёт непропорционально (по ведомости марта бонусы за экспорт фиксированный %, fixed salary — большая часть).
+    </div>
+    <div class="fact">
+      <strong>Якорь 3 — Связанные стороны.</strong> Если продать группу, внутренние отгрузки между ELAN KIMYA ↔ ELAN BEAUTY ↔ ФОП Кравченко ↔ ELAN COSMETICS UAE нужно либо консолидировать, либо реклассифицировать как внутригрупповые.
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Касса АГ Кравченко — что это и как интерпретировать</h2>
+    <div class="fact">
+      Отдельная касса (USD) учредителя Анны Геннадьевны Кравченко. Через неё за дек'25-апр'26 прошло <strong>$400-500k cash flow</strong>.
+      <strong>По вводной пользователя: это не equity injection, а доход от <em>другого направления бизнеса</em> группы.</strong>
+      Соответственно, для консолидированного P&L их нужно <em>учитывать как revenue группы</em>, а не как founder loan.
+    </div>
+    <div class="fact">
+      В декабре 2025 был разовый транш <strong>263k EUR от "TG" (Гузенко)</strong> — похоже, это платеж клиента или доход этого «другого направления».
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>CAPEX — где деньги</h2>
+    <div class="fact">
+      Бюджет <strong>$550k</strong>, потрачено <strong>$485k</strong> (88%), остаток $64k.
+      Долг китайским поставщикам по проформам: ~$142k (тубная машина, реактор миксер 1т, сашедные машины).
+      Крупнейшие позиции: тубная машина ($43k), погрузчик ($21k), водоочистка ($28k), пожаротушение ($35k), реактор 250л ($19k).
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Правила работы с данными</h2>
+    <div class="fact">
+      <strong>Валюта первичного учёта:</strong> TL (лира). Но финотчёт сводится к EUR (через <code>RAPORLAR</code>) и параллельно USD (через <code>УЧЕТ НАЛИЧНЫХ АГ</code>). Для дашборда главная валюта <strong>EUR</strong>, USD показываем для цели $250M.
+    </div>
+    <div class="fact">
+      <strong>Учёт ведётся в:</strong> 1С + местная турецкая программа (два бухгалтера). Бухгалтер Уфук — мали мушавир (accountant).
+    </div>
+    <div class="fact">
+      <strong>Excel-артефакты (источник):</strong>
+      <ul style="margin-left: 20px; margin-top: 6px">
+        <li><code>RAPORLAR YYYY MM Kimya.xlsx</code> — полный месячный оборот (ИТОГ/ОПЛАТЫ/ПОСТУПЛЕНИЯ/ПРОДАЖИ)</li>
+        <li><code>Зарплата MM YYYY.xlsx</code> — поименная ведомость + отгрузки по брендам с cost/price</li>
+        <li><code>Расходы на стройку YYYY,YYYY.xlsx</code> — CAPEX tracker (Ремонт + Инвестиции + Украинский офис)</li>
+        <li><code>УЧЕТ НАЛИЧНЫХ YYYY АГ.xlsx</code> — касса Анны Геннадьевны по месяцам</li>
+      </ul>
+    </div>
+    <div class="fact">
+      Дата начала отсчёта для первого дашборда: <strong>июнь 2025</strong> (есть скрин). Дальше нужно импортировать каждый <code>RAPORLAR</code> в унифицированную структуру Google Sheets.
+    </div>
+  </div>
+
+  <div class="brain-section">
+    <h2>Словарь турецких терминов в данных</h2>
+    <pre>TAHSİLAT       → поступление (cash in)
+ÖDEME          → оплата (cash out)
+SATIŞ          → продажа / revenue
+İHRACAT        → экспорт
+GÜMRÜK         → таможня
+HAMMADDE       → сырьё
+AMBALAJ        → упаковка
+MAAŞ           → зарплата
+SGK            → соцстрах (аналог SGK Turkey)
+NAKLİYE        → перевозки
+KARGO          → курьер/карго
+TADİLAT        → ремонт
+MALİ MÜŞAVİR   → бухгалтер (accountant)
+FABRİKA GİDERİ → расходы фабрики
+ORTAKLARA BORÇ → долг партнёрам (= вливания учредителей)
+KASA           → касса (cash drawer)
+EMLAK KATILIM  → банк Emlak Bank
+VAKIFBANK      → банк Vakif
+PEŞİN          → наличный (vs VADELİ — отсроченный)</pre>
+  </div>
+
+  <div class="brain-section">
+    <h2>Цели на ближайшие 6 мес (Q2-Q3 2026)</h2>
+    <ol style="margin-left:20px">
+      <li>Запустить собственный бренд в мае → первые €10k revenue в июне.</li>
+      <li>Выровнять CAPEX, закрыть долг китайцам ($142k).</li>
+      <li>Наладить регулярный экспорт сырья через <strong>Inward Processing Relief</strong> → минус €20-40k/мес таможни.</li>
+      <li>Вывести выручку на стационар €110-130k/мес (уровень июня'25 + 15%).</li>
+      <li>Консолидировать отчётность группы (TR/PL/UAE/UA) на месячной основе.</li>
+      <li>Перевести все данные из Excel в Google Sheets с унифицированной схемой, подключить к дашборду.</li>
+    </ol>
+  </div>
+
+  <div class="brain-section">
+    <h2>Архитектурные принципы сайта</h2>
+    <ul style="margin-left:20px">
+      <li><strong>Статичный сайт</strong> на GitHub Pages — без бэкенда, без базы данных.</li>
+      <li><strong>Данные:</strong> сейчас в <code>data.js</code>. Позже — Google Sheets через gviz API (как у V7).</li>
+      <li><strong>Язык UI:</strong> русский (CEO/владельцы русскоязычные).</li>
+      <li><strong>Валюта UI:</strong> EUR primary, USD для цели $250M.</li>
+      <li><strong>Нет скидок, есть бонусы</strong> — терминология общая с V7: слово «скидка» не использовать.</li>
+      <li><strong>Погружаться в данные до конца</strong> — перед вопросами к пользователю исчерпать dashboard/Excel/базы.</li>
+    </ul>
+  </div>
+
+  <div class="callout green">
+    <strong>Следующий шаг:</strong> подключить Google Sheets как источник данных, перевести <code>data.js</code> на live-pull через gviz. Это позволит бухгалтерам обновлять одну таблицу и весь сайт автоматически пересчитается.
+  </div>
+</main>
+
+<footer>ELAN Factory · Brain · читать ПЕРВЫМ делом перед анализом</footer>
+</body>
+</html>

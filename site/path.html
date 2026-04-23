@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Путь к $250M</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="path.html" class="active">→ $250M</a>
+    <a href="brain.html">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Путь к $250M · Value Bridge</h1>
+  <div class="subtitle">Цель: продать группу с брендом ELAN за $250M за 5-7 лет (2030-2032). Текущая оценка $7-12M. Доля пользователя 7%.</div>
+
+  <h2>Текущая оценка — компонентная</h2>
+  <div class="card">
+    <table id="valTable">
+      <thead><tr><th>Компонент</th><th class="num">USD</th><th class="num">% итога</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Сценарии exit к 2030-2032</h2>
+  <div class="card"><div class="chart-wrap" style="height:360px"><canvas id="scenarioChart"></canvas></div></div>
+
+  <div class="grid grid-4" style="margin-top:16px" id="scenarioCards"></div>
+
+  <h2>Ожидаемая стоимость (probability-weighted)</h2>
+  <div class="card" id="ev"></div>
+
+  <h2>Что нужно сделать — чеклист</h2>
+  <div class="card">
+    <table id="checklist">
+      <thead><tr><th>Задача</th><th>Зачем</th><th>Срок</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td>Запустить собственный бренд (шампунь, гель)</td><td>Главный value-driver, открывает DTC multiple 3-6×</td><td>Май 2026</td><td><span class="pill amber">В работе</span></td></tr>
+        <tr><td>Консолидированная отчётность группы (TR/UA/PL/UAE)</td><td>Без этого DD невозможен</td><td>Q3 2026</td><td><span class="pill red">Не начато</span></td></tr>
+        <tr><td>Снизить долю related-party до &lt;30%</td><td>Инвестор видит 60% связанных как red flag</td><td>2026-2027</td><td><span class="pill red">Не начато</span></td></tr>
+        <tr><td>Таможенный режим IPR (inward processing)</td><td>Срезать до 40% COGS в пиковые месяцы</td><td>Q2-Q3 2026</td><td><span class="pill">Выяснить</span></td></tr>
+        <tr><td>GMP / ISO / Ecocert / Cosmos</td><td>Обязательно для премиум-контрактов и DD</td><td>2026-2027</td><td><span class="pill amber">GMP в процессе</span></td></tr>
+        <tr><td>Переход с Excel на ERP/BI</td><td>Due diligence data room readiness</td><td>2027</td><td><span class="pill red">Не начато</span></td></tr>
+        <tr><td>Формализовать касса АГ как lending или operating income</td><td>Иначе это выглядит как founder loan (дисконт к оценке)</td><td>Q3 2026</td><td><span class="pill red">Не начато</span></td></tr>
+        <tr><td>Запуск DTC канала собственного бренда</td><td>Без DTC нет brand premium на exit</td><td>Q3 2026</td><td><span class="pill">Планируется</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+
+<footer>ELAN Factory Dashboard · Путь к $250M</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const v = D.valuation;
+const fmtM = v => '$' + (v/1e6).toFixed(1) + 'M';
+const fmtPct = v => (v*100).toFixed(0) + '%';
+
+// Valuation components
+const total = v.components.reduce((s, c) => s + c.value, 0);
+document.querySelector('#valTable tbody').innerHTML = v.components.map(c => `
+  <tr>
+    <td>${c.name}</td>
+    <td class="num">${fmtM(c.value)}</td>
+    <td class="num">${((c.value / total) * 100).toFixed(0)}%</td>
+  </tr>
+`).join('') + `<tr><td><strong>ИТОГО (центр диапазона)</strong></td><td class="num"><strong>${fmtM(total)}</strong></td><td></td></tr>
+<tr><td class="dim">Диапазон $${v.totalLow/1e6}M – $${v.totalHigh/1e6}M</td><td></td><td></td></tr>
+<tr><td><strong>Доля пользователя 7%</strong></td><td class="num warn">$${v.userShare7pct.low/1000}k – $${v.userShare7pct.high/1000}k</td><td></td></tr>`;
+
+// Scenarios chart
+const scs = Object.values(D.scenarios);
+new Chart(document.getElementById('scenarioChart'), {
+  type: 'bar',
+  data: {
+    labels: scs.map(s => s.name),
+    datasets: [{
+      label: 'Exit value $M',
+      data: scs.map(s => s.exitValue / 1e6),
+      backgroundColor: scs.map(s => s.exitValue >= 200e6 ? '#22c55e' : s.exitValue >= 100e6 ? '#3b82f6' : s.exitValue >= 30e6 ? '#f5a524' : '#6b7280'),
+    }],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `$${ctx.raw.toFixed(0)}M (prob ${(scs[ctx.dataIndex].probability*100).toFixed(0)}%)` } },
+    },
+    scales: {
+      x: { ticks: { color: '#8a98aa', callback: v => '$' + v + 'M' }, grid: { color: '#243041' } },
+      y: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+    },
+  },
+});
+
+// Scenario cards
+document.getElementById('scenarioCards').innerHTML = scs.map(s => {
+  const share7 = s.exitValue * 0.07;
+  return `<div class="kpi">
+    <div class="label">${s.name}</div>
+    <div class="value">$${(s.exitValue/1e6).toFixed(0)}M</div>
+    <div class="sub">Ваша 7%: $${(share7/1e6).toFixed(1)}M</div>
+    <div class="sub">Probability: ${(s.probability*100).toFixed(0)}%</div>
+    <div class="sub">Rev: $${(s.rev2030/1e6).toFixed(0)}M · EBITDA $${(s.ebitda2030/1e6).toFixed(1)}M × ${s.multiple}×</div>
+  </div>`;
+}).join('');
+
+// EV
+const ev = scs.reduce((s, sc) => s + sc.exitValue * sc.probability, 0);
+const evShare = ev * 0.07;
+document.getElementById('ev').innerHTML = `
+  <div class="grid grid-3">
+    <div class="kpi">
+      <div class="label">EV группы (probability-weighted)</div>
+      <div class="value pos">$${(ev/1e6).toFixed(0)}M</div>
+      <div class="sub">математическое ожидание</div>
+    </div>
+    <div class="kpi">
+      <div class="label">EV вашей доли 7%</div>
+      <div class="value pos">$${(evShare/1e6).toFixed(1)}M</div>
+      <div class="sub">~×${(evShare / v.userShare7pct.high).toFixed(0)} от сегодня</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Вероятность $250M</div>
+      <div class="value warn">${(D.scenarios.strategic_exit.probability*100).toFixed(0)}%</div>
+      <div class="sub">нужен strategic exit + сильный бренд</div>
+    </div>
+  </div>
+  <div class="callout green" style="margin-top:12px">
+    <strong>Вывод:</strong> даже без strategic exit ваша доля 7% имеет ожидаемую ценность ~$${(evShare/1e6).toFixed(1)}M — это ×${(evShare/v.userShare7pct.high).toFixed(0)} к текущей оценке $${(v.userShare7pct.high/1000).toFixed(0)}k. Целиться в $250M можно, но базовый план должен давать $50-100M exit с вероятностью ≥50%.
+  </div>`;
+</script>
+</body>
+</html>

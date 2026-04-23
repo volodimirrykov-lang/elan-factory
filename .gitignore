@@ -1,0 +1,11 @@
+_raw/
+*.xlsx
+~$*.xlsx
+out*.txt
+feb_out.txt
+*.py
+.DS_Store
+Thumbs.db
+node_modules/
+.vscode/
+.idea/

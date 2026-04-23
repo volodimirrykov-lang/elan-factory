@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · P&L</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html" class="active">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="path.html">→ $250M</a>
+    <a href="brain.html">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>P&amp;L — помесячный разбор</h1>
+  <div class="subtitle">Cash-basis P&L в EUR. Normalized EBITDA считаем по июню 2025 (стационарный режим без переезда/CAPEX).</div>
+
+  <h2>Полный P&L по месяцам (EUR)</h2>
+  <div class="card">
+    <table id="pnlTable">
+      <thead><tr>
+        <th>Статья</th>
+        <th class="num">Июнь 2025</th>
+        <th class="num">Февраль 2026</th>
+        <th class="num">Март 2026</th>
+        <th class="num">Δ март vs июнь</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Визуализация маржи</h2>
+  <div class="card"><div class="chart-wrap"><canvas id="marginChart"></canvas></div></div>
+
+  <h2>Структура COGS+OpEx (март 2026)</h2>
+  <div class="card"><div class="chart-wrap"><canvas id="costBreakdown"></canvas></div></div>
+
+  <h2>Normalized annual run-rate (по июнь'25)</h2>
+  <div class="card" id="normalizedPnl"></div>
+</main>
+
+<footer>ELAN Factory Dashboard · P&L</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const fmt = (v, s='€') => (Math.abs(v) >= 1e6 ? (v/1e6).toFixed(2)+'M' : Math.abs(v) >= 1e3 ? (v/1e3).toFixed(1)+'k' : v.toFixed(0)) + s;
+const fmtPct = v => (v*100).toFixed(1) + '%';
+
+const m = D.months;
+const [jun, feb, mar] = [m[0], m[1], m[2]];
+
+const row = (label, fn, cls = '', indent = 0) => {
+  const vals = [jun, feb, mar].map(fn);
+  const delta = vals[2] - vals[0];
+  return `<tr class="${cls}">
+    <td style="padding-left:${12 + indent*16}px">${label}</td>
+    <td class="num">${fmt(vals[0])}</td>
+    <td class="num">${fmt(vals[1])}</td>
+    <td class="num">${fmt(vals[2])}</td>
+    <td class="num ${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td>
+  </tr>`;
+};
+
+const rows = [
+  row('<strong>Revenue (SATIŞLAR)</strong>', x => x.revenue, 'pill'),
+  row('<strong>COGS</strong>', x => -x.cogs.total),
+  row('↳ Сырьё', x => -x.cogs.raw_materials, '', 1),
+  row('↳ Упаковка', x => -x.cogs.packaging, '', 1),
+  row('↳ Доставка/карго', x => -x.cogs.shipping, '', 1),
+  row('↳ Таможня импорт', x => -x.cogs.customs, '', 1),
+  row('<strong>Gross profit</strong>', x => x.revenue - x.cogs.total),
+  row('Gross margin', x => (x.revenue - x.cogs.total) / Math.max(x.revenue, 1)),
+  row('<strong>OpEx</strong>', x => -x.opex.total),
+  row('↳ Персонал', x => -x.opex.personnel, '', 1),
+  row('↳ Содержание фабрики', x => -x.opex.factory, '', 1),
+  row('↳ Услуги (банк/юр/бух)', x => -x.opex.services, '', 1),
+  row('↳ Прочие/Укр офис', x => -x.opex.other, '', 1),
+  row('<strong>Operating profit</strong>', x => x.opProfit),
+  row('Operating margin', x => x.opMargin),
+  row('CAPEX (cash out, не в P&L)', x => -x.capex),
+  row('Founder injection', x => x.founderInjection),
+];
+
+// Fix % rows (re-render margins)
+const fixed = rows.map((r, i) => {
+  if (r.includes('Gross margin') || r.includes('Operating margin')) {
+    const pcs = [jun, feb, mar].map(x => i === 7 ? (x.revenue - x.cogs.total) / Math.max(x.revenue, 1) : x.opMargin);
+    return `<tr><td style="padding-left:12px" class="dim">${r.includes('Gross') ? 'Gross margin' : 'Operating margin'}</td>
+      <td class="num ${pcs[0] >= 0 ? 'pos' : 'neg'}">${fmtPct(pcs[0])}</td>
+      <td class="num ${pcs[1] >= 0 ? 'pos' : 'neg'}">${fmtPct(pcs[1])}</td>
+      <td class="num ${pcs[2] >= 0 ? 'pos' : 'neg'}">${fmtPct(pcs[2])}</td>
+      <td class="num dim">—</td></tr>`;
+  }
+  return r;
+});
+
+document.querySelector('#pnlTable tbody').innerHTML = fixed.join('');
+
+// Margin chart
+new Chart(document.getElementById('marginChart'), {
+  type: 'line',
+  data: {
+    labels: m.map(x => x.label),
+    datasets: [
+      { label: 'Gross margin %', data: m.map(x => ((x.revenue - x.cogs.total) / Math.max(x.revenue, 1)) * 100), borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', tension: 0.3 },
+      { label: 'Operating margin %', data: m.map(x => x.opMargin * 100), borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,0.1)', tension: 0.3 },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: '#8a98aa' } } },
+    scales: {
+      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+      y: { ticks: { color: '#8a98aa', callback: v => v.toFixed(0) + '%' }, grid: { color: '#243041' } },
+    },
+  },
+});
+
+// Cost breakdown donut (March)
+new Chart(document.getElementById('costBreakdown'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Таможня импорт', 'Персонал', 'Сырьё', 'Упаковка', 'Доставка', 'Содержание фабрики', 'Услуги', 'Украинский офис+прочие'],
+    datasets: [{
+      data: [
+        mar.cogs.customs, mar.opex.personnel, mar.cogs.raw_materials,
+        mar.cogs.packaging, mar.cogs.shipping, mar.opex.factory,
+        mar.opex.services, mar.opex.other,
+      ],
+      backgroundColor: ['#ef4444', '#f5a524', '#3b82f6', '#a855f7', '#ec4899', '#22c55e', '#eab308', '#6b7280'],
+    }],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'right', labels: { color: '#8a98aa', font: { size: 11 } } },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.raw)} (${((ctx.raw / (mar.cogs.total + mar.opex.total))*100).toFixed(1)}%)` } },
+    },
+  },
+});
+
+// Normalized annual
+const nJun = {
+  rev: jun.revenue * 12,
+  cogs: jun.cogs.total * 12,
+  opex: jun.opex.total * 12,
+  op: jun.opProfit * 12,
+};
+document.getElementById('normalizedPnl').innerHTML = `
+  <div class="grid grid-4">
+    <div class="kpi"><div class="label">Annual revenue</div><div class="value">${fmt(nJun.rev)}</div><div class="sub">june'25 × 12</div></div>
+    <div class="kpi"><div class="label">Annual COGS</div><div class="value">${fmt(nJun.cogs)}</div></div>
+    <div class="kpi"><div class="label">Annual OpEx</div><div class="value">${fmt(nJun.opex)}</div></div>
+    <div class="kpi"><div class="label">Annual Op Profit</div><div class="value pos">${fmt(nJun.op)}</div><div class="sub">${fmtPct(jun.opMargin)} margin</div></div>
+  </div>
+  <div class="callout green">
+    Июнь'25 annualized: <strong>€${(nJun.rev/1000).toFixed(0)}k revenue / €${(nJun.op/1000).toFixed(0)}k op profit</strong>.
+    При multiple 8-10× → <strong>$${((nJun.op * 8 * 1.08)/1e6).toFixed(1)}-${((nJun.op * 10 * 1.08)/1e6).toFixed(1)}M</strong> только CMO going concern.
+  </div>`;
+</script>
+</body>
+</html>

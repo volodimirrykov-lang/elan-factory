@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · CAPEX</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="capex.html" class="active">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="path.html">→ $250M</a>
+    <a href="brain.html">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>CAPEX — инвестиции в оборудование и стройку</h1>
+  <div class="subtitle">Сен 2025 — Мар 2026. Бюджет $550k, потрачено $485k. Остаток $64k + долг китайцам $142k.</div>
+
+  <div class="grid grid-4" id="kpiRow"></div>
+
+  <h2>Помесячная динамика (USD)</h2>
+  <div class="card"><div class="chart-wrap" style="height:320px"><canvas id="capexChart"></canvas></div></div>
+
+  <h2>Крупные позиции оборудования</h2>
+  <div class="card">
+    <table id="itemsTable">
+      <thead><tr><th>Наименование</th><th>Статус</th><th class="num">Стоимость $</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Ассет-стоимость для оценки</h2>
+  <div class="card">
+    <div class="callout green">
+      <strong>Asset floor:</strong> Даже при ликвидации фабрика стоит как минимум суммы CAPEX (оборудование почти новое). $485k вложено, +$1.1M asset floor с инвентарём — это нижняя граница оценки группы.
+    </div>
+  </div>
+</main>
+
+<footer>ELAN Factory Dashboard · CAPEX</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const fmt = (v, c='$') => c + (v >= 1000 ? (v/1000).toFixed(0) + 'k' : v.toFixed(0));
+
+const c = D.capex;
+const kpis = [
+  { label: 'Budget', value: fmt(c.budget) },
+  { label: 'Spent', value: fmt(c.spent), cls: 'warn' },
+  { label: 'Remaining budget', value: fmt(c.remaining_budget) },
+  { label: 'Долг китайцам', value: fmt(c.pending_to_chinese), cls: 'neg' },
+];
+document.getElementById('kpiRow').innerHTML = kpis.map(k => `
+  <div class="kpi">
+    <div class="label">${k.label}</div>
+    <div class="value ${k.cls || ''}">${k.value}</div>
+  </div>
+`).join('');
+
+// Chart
+new Chart(document.getElementById('capexChart'), {
+  type: 'bar',
+  data: {
+    labels: c.breakdown.map(b => b.month),
+    datasets: [
+      { label: 'Ремонт', data: c.breakdown.map(b => b.ремонт), backgroundColor: '#ef4444', stack: 's' },
+      { label: 'Оборудование', data: c.breakdown.map(b => b.оборудование), backgroundColor: '#3b82f6', stack: 's' },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#8a98aa' } },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw)}` } },
+    },
+    scales: {
+      x: { stacked: true, ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+      y: { stacked: true, ticks: { color: '#8a98aa', callback: v => fmt(v) }, grid: { color: '#243041' } },
+    },
+  },
+});
+
+document.querySelector('#itemsTable tbody').innerHTML = c.majorItems
+  .sort((a, b) => b.value - a.value)
+  .map(i => `
+    <tr>
+      <td>${i.name}</td>
+      <td><span class="pill ${i.status.includes('50%') ? 'amber' : 'green'}">${i.status}</span></td>
+      <td class="num">${i.value.toLocaleString('ru-RU')}</td>
+    </tr>`).join('');
+</script>
+</body>
+</html>

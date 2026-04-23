@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Продукты</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html" class="active">Продукты</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="path.html">→ $250M</a>
+    <a href="brain.html">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Продукты · юнит-экономика</h1>
+  <div class="subtitle">Маржа по брендам: стоимость наполнения vs отпускная цена (цена продукта). Данные из ведомости отгрузок март 2026.</div>
+
+  <h2>Отгрузки по брендам (март 2026)</h2>
+  <div class="card">
+    <table id="brandsTable">
+      <thead><tr>
+        <th>Бренд</th>
+        <th class="num">SKU</th>
+        <th class="num">Units</th>
+        <th class="num">Cost €</th>
+        <th class="num">Price €</th>
+        <th class="num">Markup</th>
+        <th class="num">Gross €</th>
+        <th>Health</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Margin vs Volume (scatter)</h2>
+  <div class="card"><div class="chart-wrap"><canvas id="scatter"></canvas></div></div>
+
+  <h2>Запасы — готовая продукция и сырьё (март 2026)</h2>
+  <div class="card">
+    <table id="invTable">
+      <thead><tr>
+        <th>Категория</th>
+        <th class="num">Units</th>
+        <th class="num">Value €</th>
+        <th class="num">€/unit</th>
+        <th class="num">% инвентаря</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="callout">
+    <strong>Наблюдение:</strong> USUPSO имеет 172% markup — это наиболее прибыльный контракт. LUNESI UK (топ по объёму) только 16% markup — тянет общую маржу вниз. Стратегически нужно либо поднимать цену LUNESI, либо переключать мощности на более маржинальные контракты. Big inventory (€695k) — значит, есть слот для бренда ELAN без новых вложений в упаковку.
+  </div>
+</main>
+
+<footer>ELAN Factory Dashboard · Продукты</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const fmt = v => (v >= 1000 ? (v/1000).toFixed(1) + 'k' : v.toFixed(0));
+const fmtPct = v => (v*100).toFixed(0) + '%';
+
+// Brands table
+document.querySelector('#brandsTable tbody').innerHTML = D.productShipments.map(b => {
+  let health = 'red', pill = 'Низкая маржа';
+  if (b.markup > 1.0) { health = 'green'; pill = 'Отличная'; }
+  else if (b.markup > 0.4) { health = 'amber'; pill = 'Нормальная'; }
+  const gross = b.price - b.cost;
+  return `<tr>
+    <td>${b.brand}</td>
+    <td class="num">${b.sku_count}</td>
+    <td class="num">${b.units.toLocaleString('ru-RU')}</td>
+    <td class="num">${fmt(b.cost)}€</td>
+    <td class="num">${fmt(b.price)}€</td>
+    <td class="num ${health === 'green' ? 'pos' : health === 'amber' ? 'warn' : 'neg'}">${fmtPct(b.markup)}</td>
+    <td class="num">${fmt(gross)}€</td>
+    <td><span class="pill ${health}">${pill}</span></td>
+  </tr>`;
+}).join('');
+
+// Scatter
+new Chart(document.getElementById('scatter'), {
+  type: 'scatter',
+  data: {
+    datasets: [{
+      label: 'Бренд',
+      data: D.productShipments.map(b => ({ x: b.price, y: b.markup * 100, r: Math.sqrt(b.units) / 2, label: b.brand })),
+      backgroundColor: 'rgba(245,165,36,0.5)',
+      borderColor: '#f5a524',
+    }],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: €${fmt(ctx.raw.x)} / ${ctx.raw.y.toFixed(0)}% markup` } },
+    },
+    scales: {
+      x: { title: { text: 'Revenue в марте, €', display: true, color: '#8a98aa' }, ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+      y: { title: { text: 'Markup %', display: true, color: '#8a98aa' }, ticks: { color: '#8a98aa', callback: v => v + '%' }, grid: { color: '#243041' } },
+    },
+  },
+});
+
+// Inventory
+const inv = D.inventory;
+const items = [
+  { name: 'Готовая продукция', ...inv.finishedGoods },
+  { name: 'Сырьё', ...inv.rawMaterials },
+  { name: 'Тара', ...inv.packaging_jars },
+  { name: 'Коробки', ...inv.packaging_boxes },
+  { name: 'Этикетки', ...inv.labels },
+  { name: 'Инструкции', ...inv.instructions },
+];
+document.querySelector('#invTable tbody').innerHTML = items.map(i => `
+  <tr>
+    <td>${i.name}</td>
+    <td class="num">${i.units.toLocaleString('ru-RU')}</td>
+    <td class="num">${fmt(i.value)}€</td>
+    <td class="num dim">${(i.value/i.units).toFixed(2)}</td>
+    <td class="num">${((i.value / inv.total)*100).toFixed(1)}%</td>
+  </tr>
+`).join('') + `<tr><td><strong>ИТОГО</strong></td><td></td><td class="num"><strong>${fmt(inv.total)}€</strong></td><td></td><td class="num">100%</td></tr>`;
+</script>
+</body>
+</html>

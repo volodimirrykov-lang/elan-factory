@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Cash</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="logo">ELAN FACTORY</div>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html" class="active">Cash</a>
+    <a href="path.html">→ $250M</a>
+    <a href="brain.html">🧠 Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Cash Flow</h1>
+  <div class="subtitle">ELAN KIMYA (EUR) + Касса учредителя АГ (USD — поступает от другого направления). Вливания учредителей теперь считаем доходом группы (не equity).</div>
+
+  <h2>Касса АГ (другое направление) — помесячно</h2>
+  <div class="card"><div class="chart-wrap"><canvas id="agChart"></canvas></div></div>
+
+  <div class="card" style="margin-top:16px">
+    <table id="agTable">
+      <thead><tr><th>Месяц</th><th class="num">Приход $</th><th class="num">Расход $</th><th class="num">Ending $</th><th>Note</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>ELAN KIMYA cash (EUR)</h2>
+  <div class="card"><div class="chart-wrap"><canvas id="elanChart"></canvas></div></div>
+
+  <div class="callout">
+    Если засчитывать <strong>«вливания учредителей» как доход группы</strong> (по вводной пользователя), картина меняется: в марте вместо -€28k получаем +€63k группового cash flow. Но для инвестора/DD это всё равно нужно структурировать как formal loan или revenue из другого направления.
+  </div>
+</main>
+
+<footer>ELAN Factory Dashboard · Cash</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const fmt = v => (Math.abs(v) >= 1000 ? (v/1000).toFixed(0) + 'k' : v.toFixed(0));
+
+// AG kassa
+new Chart(document.getElementById('agChart'), {
+  type: 'bar',
+  data: {
+    labels: D.agKassa.map(x => x.label),
+    datasets: [
+      { label: 'Приход $', data: D.agKassa.map(x => x.in), backgroundColor: '#22c55e' },
+      { label: 'Расход $', data: D.agKassa.map(x => -x.out), backgroundColor: '#ef4444' },
+      { label: 'Net $', type: 'line', data: D.agKassa.map(x => x.in - x.out), borderColor: '#f5a524', backgroundColor: 'rgba(245,165,36,0.2)', tension: 0.3 },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#8a98aa' } },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: $${fmt(Math.abs(ctx.raw))}` } },
+    },
+    scales: {
+      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+      y: { ticks: { color: '#8a98aa', callback: v => '$' + fmt(v) }, grid: { color: '#243041' } },
+    },
+  },
+});
+
+document.querySelector('#agTable tbody').innerHTML = D.agKassa.map(x => `
+  <tr>
+    <td>${x.label}</td>
+    <td class="num pos">${fmt(x.in)}</td>
+    <td class="num neg">${fmt(x.out)}</td>
+    <td class="num ${x.ending >= 0 ? 'pos' : 'neg'}">${fmt(x.ending)}</td>
+    <td class="dim">${x.note || ''}</td>
+  </tr>
+`).join('');
+
+// ELAN KIMYA cash
+new Chart(document.getElementById('elanChart'), {
+  type: 'bar',
+  data: {
+    labels: D.months.map(m => m.label),
+    datasets: [
+      { label: 'Cash In €', data: D.months.map(m => m.cashIn), backgroundColor: '#22c55e' },
+      { label: 'Cash Out €', data: D.months.map(m => -m.cashOut), backgroundColor: '#ef4444' },
+      { label: 'Net €', type: 'line', data: D.months.map(m => m.cashIn - m.cashOut), borderColor: '#f5a524', tension: 0.3 },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { labels: { color: '#8a98aa' } },
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: €${fmt(Math.abs(ctx.raw))}` } },
+    },
+    scales: {
+      x: { ticks: { color: '#8a98aa' }, grid: { color: '#243041' } },
+      y: { ticks: { color: '#8a98aa', callback: v => '€' + fmt(v) }, grid: { color: '#243041' } },
+    },
+  },
+});
+</script>
+</body>
+</html>
