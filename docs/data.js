@@ -63,6 +63,18 @@ window.ELAN_DATA = {
           "country": "AU",
           "amount": 2247.6,
           "key": "australia"
+        },
+        {
+          "name": "ELAN KOZMETIK (розница TR)",
+          "country": "TR",
+          "amount": 881.38,
+          "key": "elan_kozmetik_tr"
+        },
+        {
+          "name": "Прочие мелкие клиенты",
+          "country": "various",
+          "amount": 544.57,
+          "key": "misc"
         }
       ]
     },
@@ -100,12 +112,6 @@ window.ELAN_DATA = {
       "exportShare": 0.9328,
       "clients": [
         {
-          "name": "Приваты (розн. бренды)",
-          "country": "various",
-          "amount": 58874.97,
-          "key": "privates"
-        },
-        {
           "name": "USUPSO",
           "country": "UA",
           "amount": 23839.82,
@@ -142,6 +148,12 @@ window.ELAN_DATA = {
           "key": "lunesi_uk"
         },
         {
+          "name": "ELAN KOZMETIK (розница TR)",
+          "country": "TR",
+          "amount": 6687.19,
+          "key": "elan_kozmetik_tr"
+        },
+        {
           "name": "LUNESI COSMOPROF",
           "country": "IT",
           "amount": 3512.6,
@@ -164,6 +176,18 @@ window.ELAN_DATA = {
           "country": "UK",
           "amount": 1054.15,
           "key": "lunesi_uk_raye"
+        },
+        {
+          "name": "Прочие мелкие клиенты",
+          "country": "various",
+          "amount": 481.86,
+          "key": "misc"
+        },
+        {
+          "name": "EUROPA BELLE",
+          "country": "PL",
+          "amount": 259.53,
+          "key": "europa_belle"
         }
       ]
     }
@@ -217,47 +241,56 @@ window.ELAN_DATA = {
     {
       "account": "EMLAK BANK TL",
       "currency": "TL",
-      "balance": 16673.82
+      "balance": 16673.82,
+      "eurEquiv": 326.3
     },
     {
       "account": "VAKIF BANK TL",
       "currency": "TL",
-      "balance": 13537.35
+      "balance": 13537.35,
+      "eurEquiv": 264.92
     },
     {
       "account": "KASA TL",
       "currency": "TL",
-      "balance": 75246.75
+      "balance": 75246.75,
+      "eurEquiv": 1472.54
     },
     {
       "account": "EMLAK BANK EURO",
       "currency": "EUR",
-      "balance": 21527.34
+      "balance": 21527.34,
+      "eurEquiv": 21527.34
     },
     {
       "account": "VAKIF BANK EURO",
       "currency": "EUR",
-      "balance": 16970.0
+      "balance": 16970.0,
+      "eurEquiv": 16970.0
     },
     {
       "account": "KASA EURO",
       "currency": "EUR",
-      "balance": 0
+      "balance": 0,
+      "eurEquiv": 0
     },
     {
       "account": "EMLAK BANK USD",
       "currency": "USD",
-      "balance": 818.0
+      "balance": 818.0,
+      "eurEquiv": 757.41
     },
     {
       "account": "VAKIF BANK USD",
       "currency": "USD",
-      "balance": 5150.0
+      "balance": 5150.0,
+      "eurEquiv": 4768.52
     },
     {
       "account": "KASA USD",
       "currency": "USD",
-      "balance": 2000.0
+      "balance": 2000.0,
+      "eurEquiv": 1851.85
     }
   ],
   "payroll": {
@@ -463,23 +496,23 @@ window.ELAN_DATA = {
   "inventory": {
     "finishedGoods": {
       "units": 44544.0,
-      "value": 85779.61538461539
+      "value": 85779.62
     },
     "rawMaterials": {
       "units": 11603.0,
-      "value": 202641.07692307694
+      "value": 202641.08
     },
     "packaging_jars": {
       "units": 523053.0,
-      "value": 232213.90384615384
+      "value": 232213.9
     },
     "packaging_boxes": {
       "units": 491852.0,
-      "value": 106696.96153846153
+      "value": 106696.96
     },
     "labels": {
       "units": 541004.0,
-      "value": 50555.6923076923
+      "value": 50555.69
     },
     "instructions": {
       "units": 378184.0,

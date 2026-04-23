@@ -74,7 +74,9 @@
     "export_total": 2247.6
   },
   "clients": {
-    "australia": 2247.6
+    "australia": 2247.6,
+    "misc": 544.57,
+    "elan_kozmetik_tr": 881.38
   },
   "costs": {
     "cogs_materials_total": 26508.258906728937,

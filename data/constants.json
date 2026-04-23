@@ -32,7 +32,8 @@
     "bilobrov":           {"name": "BILOBROV",                   "country": "UA"},
     "usupso":             {"name": "USUPSO",                     "country": "UA"},
     "europa_belle":       {"name": "EUROPA BELLE",               "country": "PL"},
-    "elan_kozmetik_tr":   {"name": "ELAN KOZMETIK (розница TR)", "country": "TR"}
+    "elan_kozmetik_tr":   {"name": "ELAN KOZMETIK (розница TR)", "country": "TR"},
+    "misc":               {"name": "Прочие мелкие клиенты",       "country": "various"}
   },
 
   "scenarios": {

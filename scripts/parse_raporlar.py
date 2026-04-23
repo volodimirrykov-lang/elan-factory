@@ -44,7 +44,8 @@ FOUNDER_PATTERNS = [
 ]
 
 # Выручка по клиентам. Матчится по startswith — порядок важен: спец. варианты первее.
-# Учитываются только строки в блоке между "ЭКСПОРТ" и "Дебеторская задолженность" (state-машина).
+# Блок идёт от "ЭКСПОРТ" до "Дебеторская задолженность". Внутри блока есть под-заголовки
+# (ЭКСПОРТ, ТУРЦИЯ, УСЛУГИ) — их пропускаем как subtotal, не матчим.
 CLIENT_PATTERNS = [
     ("ФОП Кравченко",          "fop_kravchenko_ua"),
     ("ELAN COSMETİCS GENERAL", "elan_cosmetics_uae"),
@@ -67,6 +68,9 @@ CLIENT_PATTERNS = [
     ("ELAN KOZMETİK",          "elan_kozmetik_tr"),
     ("ELAN KOZMETIK",          "elan_kozmetik_tr"),
 ]
+
+# Строки-заголовки подблоков внутри "клиентского" блока — пропускаем, не считаем как клиентов
+CLIENT_BLOCK_HEADERS = ("ЭКСПОРТ", "ТУРЦИЯ", "УСЛУГИ (разработка")
 
 # Расходы (col G label → col H amount)
 RIGHT_COST_LABELS = {
@@ -165,18 +169,25 @@ def parse(xlsx_path: str, period: str) -> dict:
                         in_clients_block = True
                     break
 
-            # Закрываем блок клиентов, когда встречаем эти маркеры
-            if in_clients_block and any(m in a_str for m in (
-                "Дебеторская", "УСЛУГИ (разработка", "ТУРЦИЯ"
-            )):
+            # Закрываем блок клиентов на секции Дебеторская (дальше идут receivables)
+            if in_clients_block and "Дебеторская" in a_str:
                 in_clients_block = False
 
-            # Clients (startswith match, только в блоке между ЭКСПОРТ и Дебеторская)
+            # Clients — в блоке между ЭКСПОРТ и Дебеторская
             if in_clients_block:
-                for pat, key in CLIENT_PATTERNS:
-                    if a_str.startswith(pat) and num(b) is not None:
-                        out["clients"][key] = out["clients"].get(key, 0.0) + num(b)
-                        break
+                # Пропускаем строки-подзаголовки (subtotals)
+                if a_str.startswith(CLIENT_BLOCK_HEADERS):
+                    pass
+                else:
+                    matched = False
+                    for pat, key in CLIENT_PATTERNS:
+                        if a_str.startswith(pat) and num(b) is not None:
+                            out["clients"][key] = out["clients"].get(key, 0.0) + num(b)
+                            matched = True
+                            break
+                    # Неопознанные строки в блоке → bucket misc_clients (для валидации)
+                    if not matched and num(b) is not None and num(b) > 0:
+                        out["clients"]["misc"] = out["clients"].get("misc", 0.0) + num(b)
 
             # Inventory block (col A: Готовая продукция, Сырье etc)
             if contains(a, "Запасы предприятия"):

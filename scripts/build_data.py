@@ -69,9 +69,17 @@ def build_month(snapshot: dict, constants: dict, ag_kassa: list) -> dict:
     op_margin = op_profit / total_revenue if total_revenue > 0 else 0
 
     # ── Clients ──
+    # Фикс double-counting: xlsx содержит агрегат "Приваты" + его компоненты (LUNESI UK/RAYE/
+    # COSMOPROF, CLAB, BILOBROV, USUPSO) одновременно. Сумма всех клиентов = 169k при revenue 111k.
+    # Выкидываем агрегат "privates" если есть хотя бы одна из его компонент.
+    PRIVATES_COMPONENTS = {"lunesi_uk", "lunesi_uk_raye", "lunesi_cosmoprof", "clab", "bilobrov", "usupso"}
+    raw_clients = snapshot.get("clients") or {}
+    has_components = bool(raw_clients.keys() & PRIVATES_COMPONENTS)
     client_map = constants.get("clientMetadata", {})
     clients = []
-    for key, amount in (snapshot.get("clients") or {}).items():
+    for key, amount in raw_clients.items():
+        if key == "privates" and has_components:
+            continue  # пропускаем агрегат, компоненты сами покажут
         cm = client_map.get(key, {"name": key, "country": "?"})
         clients.append({"name": cm["name"], "country": cm["country"], "amount": round(amount, 2), "key": key})
     clients.sort(key=lambda c: -c["amount"])
@@ -144,8 +152,11 @@ def build_ag_kassa(ag_kassa_data: dict, notes: dict) -> list:
     return out
 
 
-def build_cash_positions(snapshot: dict) -> list:
-    """Bank positions из последнего снапшота. Пересчёт в EUR по курсу TL/EUR из constants."""
+def build_cash_positions(snapshot: dict, meta: dict) -> list:
+    """Bank positions из последнего снапшота. Пересчёт в EUR через fxTlEur и fxEurUsd.
+    Нужно для index.html (runway = totalCashEur / |groupNet|)."""
+    fx_tl_eur = meta.get("fxTlEur") or 51.10
+    fx_eur_usd = meta.get("fxEurUsd") or 1.08
     out = []
     for key, b in (snapshot.get("banks") or {}).items():
         label = b["label"]
@@ -154,26 +165,67 @@ def build_cash_positions(snapshot: dict) -> list:
         elif "USD" in label: currency = "USD"
         else: currency = "?"
         balance = b.get("end") or 0
+        if currency == "TL":    eur_equiv = balance / fx_tl_eur
+        elif currency == "USD": eur_equiv = balance / fx_eur_usd
+        else:                   eur_equiv = balance
         out.append({
             "account":  label,
             "currency": currency,
             "balance":  round(balance, 2),
+            "eurEquiv": round(eur_equiv, 2),
         })
     return out
+
+
+def _round_inv(item: dict) -> dict:
+    """Fix 16-decimal floats from openpyxl (e.g. 85779.61538461539 → 85779.62)."""
+    if not item:
+        return {}
+    return {
+        "units": round(item.get("units") or 0, 0),
+        "value": round(item.get("value") or 0, 2),
+    }
 
 
 def build_inventory(snapshot: dict) -> dict:
     inv = snapshot.get("inventory", {}) or {}
     total = sum((v.get("value") or 0) for v in inv.values())
     return {
-        "finishedGoods":    inv.get("finished_goods", {}),
-        "rawMaterials":     inv.get("raw_materials", {}),
-        "packaging_jars":   inv.get("jars", {}),
-        "packaging_boxes":  inv.get("boxes", {}),
-        "labels":           inv.get("labels", {}),
-        "instructions":     inv.get("instructions", {}),
+        "finishedGoods":    _round_inv(inv.get("finished_goods")),
+        "rawMaterials":     _round_inv(inv.get("raw_materials")),
+        "packaging_jars":   _round_inv(inv.get("jars")),
+        "packaging_boxes":  _round_inv(inv.get("boxes")),
+        "labels":           _round_inv(inv.get("labels")),
+        "instructions":     _round_inv(inv.get("instructions")),
         "total":            round(total, 2),
     }
+
+
+def validate(snapshot: dict) -> list:
+    """Data quality checks. Возвращает список предупреждений (не fatal)."""
+    warnings = []
+    period = snapshot.get("period", "?")
+    totals = snapshot.get("totals", {})
+    clients = snapshot.get("clients") or {}
+
+    # Сумма не-агрегатных клиентов ≈ revenue (допустимое отклонение 2%)
+    PRIVATES_COMPONENTS = {"lunesi_uk", "lunesi_uk_raye", "lunesi_cosmoprof", "clab", "bilobrov", "usupso"}
+    has_components = bool(clients.keys() & PRIVATES_COMPONENTS)
+    skip_keys = {"privates"} if has_components else set()
+    clients_sum = sum(v for k, v in clients.items() if k not in skip_keys)
+    revenue = totals.get("revenue", 0) or 0
+    if revenue > 0:
+        delta_pct = abs(clients_sum - revenue) / revenue
+        if delta_pct > 0.02:
+            warnings.append(f"[{period}] clients sum {clients_sum:.0f} ≠ revenue {revenue:.0f} (Δ {delta_pct*100:.1f}%)")
+
+    # Bank: start + in - out ≈ end (±0.5 EUR допуск на округление)
+    for key, b in (snapshot.get("banks") or {}).items():
+        s, i, o, e = (b.get("start") or 0), (b.get("in") or 0), (b.get("out") or 0), (b.get("end") or 0)
+        if abs((s + i - o) - e) > 0.5:
+            warnings.append(f"[{period}] bank {key}: start {s:.0f} + in {i:.0f} - out {o:.0f} ≠ end {e:.0f}")
+
+    return warnings
 
 
 def main():
@@ -182,6 +234,15 @@ def main():
     # Все месячные снапшоты
     snap_files = sorted(glob.glob(os.path.join(ROOT, "data", "snapshots", "20??-??.json")))
     snapshots = [load_json(f) for f in snap_files]
+
+    # Data quality checks
+    all_warnings = []
+    for s in snapshots:
+        all_warnings.extend(validate(s))
+    if all_warnings:
+        print("⚠️  Data quality warnings:")
+        for w in all_warnings:
+            print(f"   {w}")
 
     # AG kassa
     ag_path = os.path.join(ROOT, "data", "snapshots", "ag_kassa.json")
@@ -194,7 +255,7 @@ def main():
 
     # Последний снапшот → cashPositions + inventory
     latest = snapshots[-1] if snapshots else {}
-    cash_positions = build_cash_positions(latest)
+    cash_positions = build_cash_positions(latest, constants["meta"])
     inventory = build_inventory(latest)
 
     # Собираем итоговый объект
