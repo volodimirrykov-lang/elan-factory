@@ -53,13 +53,13 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>OEE</strong></td><td>Overall Equipment Effectiveness · Availability × Performance × Quality, %</td><td class="num">&gt; 70%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Units / day</strong></td><td>физический output по каждой линии</td><td class="num">plan vs fact</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Cycle time</strong></td><td>часы от заливки сырья до упаковки по SKU типу</td><td class="num">shampoo 2.5h</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Changeover time</strong></td><td>часы на переключение между SKU (SMED)</td><td class="num">&lt; 45 min</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>First-time batch yield</strong></td><td>% партий прошедших QC с 1-го раза</td><td class="num">&gt; 95%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Scrap / rework rate</strong></td><td>% дефектных единиц</td><td class="num">&lt; 2%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Energy / unit</strong></td><td>кВт·ч на unit · для ESG</td><td class="num">benchmark</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Показывает насколько эффективно работает ваш реактор или линия. Стоял без дела 2 часа из 10 рабочих — OEE уже 80%. Если ещё партия с браком — падает дальше. 100% это идеал: работает всё время, на плановой скорости, без брака. Intercos в среднем держит 75-85% по линиям."><strong>OEE</strong></span></td><td>насколько эффективно работает оборудование</td><td class="num">&gt; 70%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько физически флаконов, туб или саше произвели за день. Базовая метрика — CEO должен знать эту цифру к вечеру понедельника. Считается отдельно по каждой линии (реактор 250л, тубная машина, сашедные)."><strong>Units / day</strong></span></td><td>сколько флаконов произвели за день</td><td class="num">plan vs fact</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько часов нужно с момента заливки сырья в реактор до момента готовой палеты на складе. Для типового шампуня 250мл — от 2.5 до 4 часов. Чем короче — тем больше SKU в день и выше маржа."><strong>Cycle time</strong></span></td><td>часы от заливки сырья до готовой палеты</td><td class="num">shampoo 2.5h</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Время на переключение с одной формулы на другую — помыть реактор, заменить этикетки, настроить машину. Это потерянное время простоя. Intercos применяет SMED (Single-Minute Exchange of Die) — принцип снизить до 45 минут. Главный bottleneck для mixed production."><strong>Changeover time</strong></span></td><td>часы на переключение между разными SKU</td><td class="num">&lt; 45 min</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько % партий прошли контроль качества с первого раза — без переделки. Если 10 партий сделали, 1 пришлось переваривать — yield 90%. Каждая переделка это потерянный день и удвоенный расход сырья. Intercos целится на 95-98%."><strong>First-time batch yield</strong></span></td><td>% партий прошедших QC без переделки</td><td class="num">&gt; 95%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Процент бракованных единиц — протекла туба, неровно наклеена этикетка, нет крышки. Это прямой убыток: сырьё есть, а продавать некому. Норма &lt; 2%."><strong>Scrap / rework rate</strong></span></td><td>% единиц пришлось выбросить</td><td class="num">&lt; 2%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько кВт·ч электричества уходит на один флакон/тубу. L'Oréal и крупные brands смотрят это при выборе CMO — они обещают investor'ам уменьшение carbon footprint. Через 3-5 лет без этого не возьмут в supplier list."><strong>Energy / unit</strong></span></td><td>сколько энергии на 1 единицу · ESG метрика</td><td class="num">benchmark</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -75,11 +75,11 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>Inventory value</strong></td><td>готовая + сырьё + упаковка, €</td><td class="num">—</td><td class="num">€695k</td><td><span class="pill green">мерим</span></td></tr>
-        <tr><td><strong>Inventory turns</strong></td><td>revenue / avg inventory · раз / год</td><td class="num">4–8×</td><td class="num dim">—</td><td><span class="pill amber">можно посчитать</span></td></tr>
-        <tr><td><strong>Days of supply (DOS)</strong></td><td>дней работы при текущем inventory</td><td class="num">30–60</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Single-source %</strong></td><td>% ключевого сырья от 1 поставщика</td><td class="num">&lt; 40%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Supplier OTIF</strong></td><td>% поставок вовремя и полностью</td><td class="num">&gt; 90%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Общая стоимость всего что лежит на складе — готовые продукты, сырьё, упаковка. В марте €695k. Это заморожённый капитал — деньги, которые можно было бы инвестировать в рост, но они в коробках."><strong>Inventory value</strong></span></td><td>сколько денег заморожено на складе</td><td class="num">—</td><td class="num">€695k</td><td><span class="pill green">мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько раз в год склад полностью обновляется. 4× = склад заменяется каждые 3 месяца. Низкие turns = склад забит, заморожен капитал. Высокие = рискуем остаться без сырья."><strong>Inventory turns</strong></span></td><td>сколько раз в год склад обновляется</td><td class="num">4–8×</td><td class="num dim">—</td><td><span class="pill amber">можно посчитать</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Если завтра перестанут приходить поставки — сколько дней протянем на текущих запасах. 30-60 дней нормально. Меньше 15 — риск остановки. Больше 90 — замороженный капитал и риск протухшего сырья."><strong>Days of supply (DOS)</strong></span></td><td>сколько дней работы при текущих запасах</td><td class="num">30–60</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Какой % ключевого сырья покупается у ОДНОГО поставщика. Если он завтра закроется / поднимет цену / откажется поставлять — мы встанем. Norm: не больше 40%. На критичное сырьё обязательно иметь 2-го поставщика."><strong>Single-source %</strong></span></td><td>% сырья от одного поставщика (риск концентрации)</td><td class="num">&lt; 40%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="On-Time In-Full. Сколько % поставок сырья пришло вовремя и в полном объёме. Плохой OTIF = вы постоянно переделываете график, платите за срочность. Идеал: &gt; 90%."><strong>Supplier OTIF</strong></span></td><td>% поставок сырья вовремя и полностью</td><td class="num">&gt; 90%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -95,11 +95,11 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>OTIF</strong></td><td>On-Time In-Full · % заказов доставленных вовремя и полностью</td><td class="num">&gt; 95%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Lead time order→ship</strong></td><td>дней от получения заказа до отгрузки</td><td class="num">10–20 дней</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Forecast accuracy</strong></td><td>% plan vs actual production</td><td class="num">&gt; 80%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Customer retention YoY</strong></td><td>% клиентов 2024, активных в 2025</td><td class="num">&gt; 85%</td><td class="num warn">partial</td><td><span class="pill amber">частично</span></td></tr>
-        <tr><td><strong>Win rate на тендерах</strong></td><td>% выигранных RFQ</td><td class="num">&gt; 20%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Обещали клиенту 10к штук 15-го числа. Отгрузили 9500 штук 17-го. OTIF = 0 (не выполнили). Эта метрика #1 у Intercos — она определяет уйдёт ли клиент к конкуренту. Норма: &gt; 95%."><strong>OTIF</strong></span></td><td>% заказов клиентам отгружено вовремя и полностью</td><td class="num">&gt; 95%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Клиент позвонил — «хочу 10к туб шампуня». Сколько дней пройдёт до отправки? Industry стандарт для CMO: 10-20 дней. Чем короче — тем больше выиграете тендеров у медленных конкурентов."><strong>Lead time order→ship</strong></span></td><td>сколько дней от заказа до отгрузки</td><td class="num">10–20 дней</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Клиент сказал «закажем 20к тюбов в марте». По факту заказал 12к. Forecast accuracy = 60%. Плохая точность = вы закупили сырья впрок и теперь деньги заморожены. Хороший CMO добивается &gt;80%."><strong>Forecast accuracy</strong></span></td><td>насколько клиенты точны в своих планах</td><td class="num">&gt; 80%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Из 10 клиентов 2024 года — сколько остались в 2025? Если 9 — retention 90%. Низкий retention = продукт/сервис не нравится. CMO норма 85%+. При exit это один из главных factor'ов для valuation."><strong>Customer retention YoY</strong></span></td><td>% прошлогодних клиентов остались в этом году</td><td class="num">&gt; 85%</td><td class="num warn">partial</td><td><span class="pill amber">частично</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Клиент объявил тендер (RFQ — Request For Quote) — 5 CMO предложили цены, выиграл один. Ваш win rate = сколько % тендеров выиграли. Хорошо: &gt;20%. Меньше — проблемы с ценой, lead time или quality. Плохо: &lt;10% — вы недостаточно привлекательны рынку."><strong>Win rate на тендерах</strong></span></td><td>% выигранных RFQ · competitive health</td><td class="num">&gt; 20%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -115,10 +115,10 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>Complaints / 100k units</strong></td><td>жалобы клиентов на 100k произведённых</td><td class="num">&lt; 5</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Batch rejection rate</strong></td><td>% партий не прошедших QC</td><td class="num">&lt; 3%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Microbiological pass</strong></td><td>% тестов на микробиологию пройдены</td><td class="num">100%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>GMP audit findings</strong></td><td>количество major findings на аудите</td><td class="num">0 major</td><td class="num warn">в процессе</td><td><span class="pill amber">GMP в процессе</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Из 100 000 произведённых единиц — сколько жалоб получили? Если 3 — это 3 на 100к. Индустрия стандарт &lt;5. Каждая жалоба — риск потери клиента + исследование + возврат + repair. 0 жалоб — цель."><strong>Complaints / 100k units</strong></span></td><td>жалобы от клиентов на 100k единиц</td><td class="num">&lt; 5</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сделали 100 партий за месяц — 3 не прошли лабораторный контроль. Rejection rate = 3%. Каждая — 3-5 дней простоя + сырьё в мусор. Норма &lt;3%."><strong>Batch rejection rate</strong></span></td><td>% партий не прошедших QC</td><td class="num">&lt; 3%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Косметику тестируют на бактерии и грибок — если не прошла микробиологию, партия в мусор. Это KPI безопасности. Должно быть 100% ВСЕГДА. Любой fail = отзыв продукта с рынка + репутационные потери."><strong>Microbiological pass</strong></span></td><td>% тестов на микробы пройдены · безопасность</td><td class="num">100%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Инспектор из сертифицирующего органа приходит раз в год — проверяет процессы, чистоту, документы. Находит отклонения: Major (серьёзные) и Minor. Major findings = риск потери GMP сертификата. Цель: 0 major."><strong>GMP audit findings</strong></span></td><td>замечания инспектора · сохранение сертификата</td><td class="num">0 major</td><td class="num warn">в процессе</td><td><span class="pill amber">GMP в процессе</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -134,10 +134,10 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>NPI launches / year</strong></td><td>новых продуктов в год</td><td class="num">15–30</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>Vitality index</strong></td><td>% revenue от SKU младше 3 лет</td><td class="num">&gt; 25%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>R&amp;D spend / revenue</strong></td><td>% от выручки на R&amp;D</td><td class="num">2–4%</td><td class="num warn">~1%</td><td><span class="pill amber">частично</span></td></tr>
-        <tr><td><strong>Time-to-market</strong></td><td>дней brief → first batch</td><td class="num">&lt; 90 дней</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="NPI — New Product Introduction. Сколько новых SKU запустили в массовое производство за год. CMO уровня Intercos делают 20-30 launches/год. Это прямой показатель R&D mощности."><strong>NPI launches / year</strong></span></td><td>сколько новых продуктов запустили в год</td><td class="num">15–30</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Какой % сегодняшней выручки идёт от SKU младше 3 лет. Это proxy инновационности: если всё продаёте то же что 5 лет назад — vitality низкий, скоро обгонят конкуренты. L'Oréal целит 25%+."><strong>Vitality index</strong></span></td><td>% выручки от продуктов младше 3 лет</td><td class="num">&gt; 25%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Сколько % от выручки тратится на R&amp;D — лаб, тестирование, разработку новых формул. Beauty industry стандарт: 2-4%. Меньше 1% = не инновируете. Больше 5% = переинвестируете."><strong>R&amp;D spend / revenue</strong></span></td><td>% выручки на разработку новых формул</td><td class="num">2–4%</td><td class="num warn">~1%</td><td><span class="pill amber">частично</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Клиент пришёл с идеей (brief). Сколько дней до первой коммерческой партии? Cosmax держит 45 дней — рекорд индустрии. Intercos 60-90 дней. Чем быстрее — тем больше клиентов выберут вас."><strong>Time-to-market</strong></span></td><td>дней от идеи клиента до первой партии</td><td class="num">&lt; 90 дней</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
       </tbody>
     </table>
   </div>
@@ -153,9 +153,9 @@
         <th>Статус</th>
       </tr></thead>
       <tbody>
-        <tr><td><strong>Revenue / employee</strong></td><td>Group revenue / headcount, € / год</td><td class="num">€80–150k</td><td class="num">€63k*</td><td><span class="pill green">мерим</span></td></tr>
-        <tr><td><strong>Turnover rate</strong></td><td>% уволившихся / год</td><td class="num">&lt; 15%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
-        <tr><td><strong>LTIFR</strong></td><td>Lost Time Injury Frequency Rate</td><td class="num">&lt; 1.0</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Годовая выручка делённая на количество сотрудников. Показывает продуктивность. CMO норма €80-150k/сотрудник. Ниже — много людей на маленькую выручку (неэффективно). Выше — либо очень автоматизировано, либо не хватает рук."><strong>Revenue / employee</strong></span></td><td>годовая выручка ÷ количество сотрудников</td><td class="num">€80–150k</td><td class="num">€63k*</td><td><span class="pill green">мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Какой % сотрудников ушёл за год. 15% = из 40 человек ушли 6. Высокий turnover = плохая моральная атмосфера + постоянные затраты на найм/обучение. Норма для завода &lt;15%."><strong>Turnover rate</strong></span></td><td>% сотрудников ушедших за год</td><td class="num">&lt; 15%</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
+        <tr><td><span class="has-tooltip" data-tooltip="Lost Time Injury Frequency Rate — количество травм с потерей рабочего времени на миллион отработанных часов. Для завода с 40 людьми: 1 травма с больничным в год = ~12 LTIFR. Цель: &lt;1.0. Это безопасность + юридический риск."><strong>LTIFR</strong></span></td><td>частота травм на 1M рабочих часов · безопасность</td><td class="num">&lt; 1.0</td><td class="num dim">—</td><td><span class="pill red">не мерим</span></td></tr>
       </tbody>
     </table>
     <div class="callout" style="margin-top:var(--space-4)">

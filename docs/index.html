@@ -35,15 +35,46 @@
   <h1><em>Dashboard</em></h1>
   <p class="subtitle" id="subtitle"></p>
 
+  <div class="period-switcher" role="group" aria-label="Период">
+    <button data-period="feb">Февраль</button>
+    <button data-period="mar" class="active">Март</button>
+    <button data-period="ytd">YTD 2026</button>
+  </div>
+
   <!-- KPI Grid -->
   <div class="grid grid-4" id="kpis"></div>
 
-  <h2>Динамика месяц к месяцу</h2>
+  <h2>Доходы · месяц к месяцу</h2>
   <div class="card">
-    <div class="chart-wrap tall"><canvas id="revChart"></canvas></div>
+    <div class="chart-wrap tall"><canvas id="incomeChart"></canvas></div>
   </div>
 
-  <div class="grid grid-2" style="margin-top: var(--space-4)">
+  <h2>Расходы · месяц к месяцу</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>OpEx (операционные)</h3>
+      <div class="chart-wrap"><canvas id="opexChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>CapEx (инвестиции)</h3>
+      <div class="chart-wrap"><canvas id="capexChart"></canvas></div>
+    </div>
+  </div>
+
+  <h2 id="structureHeader">Структура за <span id="periodLabel">март</span></h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Структура доходов</h3>
+      <div class="chart-wrap"><canvas id="revenueStructChart"></canvas></div>
+    </div>
+    <div class="card">
+      <h3>Структура OpEx</h3>
+      <div class="chart-wrap"><canvas id="opexStructChart"></canvas></div>
+    </div>
+  </div>
+
+  <h2>Сравнение месяцев &amp; runway</h2>
+  <div class="grid grid-2">
     <div class="card">
       <h3>Сравнение месяцев</h3>
       <table id="monthsTable">
@@ -89,60 +120,110 @@ document.getElementById('updated').textContent = D.meta.lastUpdate;
 document.getElementById('subtitle').textContent =
   `Финансовый обзор группы ELAN — завод в Турции, собственный бренд (запуск май 2026). Цель: продать за $1B за ${D.meta.targetYears.join('–')} лет.`;
 
-const latest = D.months[D.months.length - 1];
+const feb = D.months[0];
+const mar = D.months[1];
+const latest = mar;
 const ytdGroupRevenue = D.months.reduce((s, m) => s + m.totalRevenue, 0);
 const ytdFactoryRev = D.months.reduce((s, m) => s + m.revenue, 0);
 const ytdOtherRev = D.months.reduce((s, m) => s + m.otherRevenue, 0);
 const ytdOpProfit = D.months.reduce((s, m) => s + m.opProfit, 0);
 
-// ============ KPIs ============
-const kpis = [
-  {
-    label: 'Group Revenue · Март',
-    value: fmt(latest.totalRevenue),
-    sub: `завод ${fmt(latest.revenue)} + другое напр. ${fmt(latest.otherRevenue)}`,
-    cls: 'pos',
-  },
-  {
-    label: 'YTD Group Revenue',
-    value: fmt(ytdGroupRevenue),
-    sub: `завод ${fmt(ytdFactoryRev)} + другое ${fmt(ytdOtherRev)}`,
-  },
-  {
-    label: 'Operating P&L · Март',
-    value: fmt(latest.opProfit),
-    sub: `Margin ${fmtPct(latest.opMargin)} (группа)`,
-    cls: latest.opProfit >= 0 ? 'pos' : 'neg',
-  },
-  {
-    label: 'CAPEX потрачено',
-    value: '$' + (D.capex.spent / 1000).toFixed(0) + 'k',
-    sub: `из $${D.capex.budget / 1000}k бюджета`,
-  },
-  {
-    label: 'Другое направление · Март',
-    value: fmt(latest.otherRevenue),
-    sub: `${fmtPct(latest.otherRevenue / latest.totalRevenue)} group revenue`,
-  },
-  { label: 'Инвентарь · Март', value: fmt(D.inventory.total), sub: 'готовая + сырьё + упаковка' },
-];
-document.getElementById('kpis').innerHTML = kpis.map(k => `
-  <div class="kpi">
-    <div class="label">${k.label}</div>
-    <div class="value ${k.cls || ''}">${k.value}</div>
-    <div class="sub">${k.sub}</div>
-  </div>`).join('');
+// ============ Period state ============
+let currentPeriod = 'mar';
+const periodData = {
+  feb: { label: 'февраль', data: feb, multi: false },
+  mar: { label: 'март', data: mar, multi: false },
+  ytd: { label: 'YTD 2026', data: null, multi: true },
+};
 
-// ============ Revenue Chart ============
-new Chart(document.getElementById('revChart'), {
+function getPeriodSummary(p) {
+  if (p === 'ytd') {
+    return {
+      revenue: ytdFactoryRev,
+      otherRevenue: ytdOtherRev,
+      totalRevenue: ytdGroupRevenue,
+      opProfit: ytdOpProfit,
+      opMargin: ytdOpProfit / Math.max(ytdGroupRevenue, 1),
+      capex: D.months.reduce((s, m) => s + m.capex, 0),
+      cogs: {
+        customs: D.months.reduce((s, m) => s + m.cogs.customs, 0),
+        raw_materials: D.months.reduce((s, m) => s + m.cogs.raw_materials, 0),
+        packaging: D.months.reduce((s, m) => s + m.cogs.packaging, 0),
+        shipping: D.months.reduce((s, m) => s + m.cogs.shipping, 0),
+        total: D.months.reduce((s, m) => s + m.cogs.total, 0),
+      },
+      opex: {
+        personnel: D.months.reduce((s, m) => s + m.opex.personnel, 0),
+        factory: D.months.reduce((s, m) => s + m.opex.factory, 0),
+        services: D.months.reduce((s, m) => s + m.opex.services, 0),
+        other: D.months.reduce((s, m) => s + m.opex.other, 0),
+        total: D.months.reduce((s, m) => s + m.opex.total, 0),
+      },
+    };
+  }
+  return periodData[p].data;
+}
+
+// ============ KPIs with hover tooltips ============
+function renderKPIs() {
+  const p = getPeriodSummary(currentPeriod);
+  const label = periodData[currentPeriod].label;
+  const kpis = [
+    {
+      label: `Group Revenue · ${label}`,
+      value: fmt(p.totalRevenue),
+      sub: `завод ${fmt(p.revenue)} + другое напр. ${fmt(p.otherRevenue)}`,
+      tooltip: `Общая выручка группы за ${label}: ${fmt(p.totalRevenue)}\n\n• Завод ELAN KIMYA (Турция): ${fmt(p.revenue)} — продажи private label\n• Другое направление группы: ${fmt(p.otherRevenue)} — доход с параллельного бизнеса\n\nПри консолидации для инвестора важно показать обе цифры раздельно.`,
+      cls: 'pos',
+    },
+    {
+      label: `Operating P&L · ${label}`,
+      value: fmt(p.opProfit),
+      sub: `Margin ${fmtPct(p.opMargin)} (группа)`,
+      tooltip: `Operating Profit = Group Revenue − COGS − OpEx\n\nМарт: +€49k (margin +24%)\nФевраль: −€98k (переезд на новую фабрику)\n\nС учётом «другого направления» бизнес в плюсе. Без него завод ещё в минусе из-за бэклога таможни €54k — разовое.`,
+      cls: p.opProfit >= 0 ? 'pos' : 'neg',
+    },
+    {
+      label: `CAPEX · ${label}`,
+      value: fmt(p.capex),
+      sub: `кумулятивно $${(D.capex.spent / 1000).toFixed(0)}k из $${D.capex.budget / 1000}k`,
+      tooltip: `Capital Expenditure — инвестиции в оборудование/ремонт. В этом дашборде показаны помесячно. Суммарно за сен 2025 – мар 2026 потрачено $485k из бюджета $550k. Остаток долга китайским поставщикам: $142k.`,
+    },
+    {
+      label: `Другое направление · ${label}`,
+      value: fmt(p.otherRevenue),
+      sub: `${fmtPct(p.otherRevenue / Math.max(p.totalRevenue, 1))} от group revenue`,
+      tooltip: `Доход с параллельного бизнеса группы, поступает через кассу АГ Кравченко в USD.\n\nВ марте: €91k, это 45% всей group revenue. Для DD нужно формализовать как internal loan или inter-group service agreement — иначе выглядит как founder contribution.`,
+    },
+    {
+      label: 'Инвентарь · Март',
+      value: fmt(D.inventory.total),
+      sub: 'готовая + сырьё + упаковка',
+      tooltip: `Стоимость всего на складе на конец марта: €695k.\n\n• Готовая продукция €86k\n• Сырьё €203k\n• Тара (flaconы) €232k\n• Коробки €107k\n• Этикетки €51k\n• Инструкции €17k\n\nБольшой запас упаковки даёт запас для scaling собственного бренда без доп. затрат.`,
+    },
+    {
+      label: 'Headcount',
+      value: '38 + 4',
+      sub: 'Турция + украинский офис',
+      tooltip: `38 сотрудников на заводе ELAN KIMYA в Турции (производство, ВЭД, R&D, админ) + 4 менеджера в украинском офисе.\n\nКоэффициент production staff / admin = 47%. Industry CMO норма 60-70% — нужно нанять больше production.`,
+    },
+  ];
+  document.getElementById('kpis').innerHTML = kpis.map(k => `
+    <div class="kpi" ${k.tooltip ? `title="${k.tooltip.replace(/"/g, '&quot;')}"` : ''}>
+      <div class="label">${k.label}</div>
+      <div class="value ${k.cls || ''}">${k.value}</div>
+      <div class="sub">${k.sub}</div>
+    </div>`).join('');
+}
+
+// ============ Income Chart (factory revenue + other direction, stacked) ============
+new Chart(document.getElementById('incomeChart'), {
   type: 'bar',
   data: {
     labels: D.months.map(m => m.label),
     datasets: [
-      { label: 'Выручка завода',    data: D.months.map(m => m.revenue),                     backgroundColor: CHART_COLORS[0], stack: 'rev' },
-      { label: 'Другое направление', data: D.months.map(m => m.otherRevenue),                backgroundColor: CHART_COLORS[4], stack: 'rev' },
-      { label: 'OpEx',              data: D.months.map(m => m.cogs.total + m.opex.total),   backgroundColor: CHART_COLORS[2], stack: 'cost' },
-      { label: 'CAPEX',             data: D.months.map(m => m.capex),                       backgroundColor: CHART_COLORS[3], stack: 'cost' },
+      { label: 'Выручка завода', data: D.months.map(m => m.revenue), backgroundColor: CHART_COLORS[0] },
+      { label: 'Другое направление', data: D.months.map(m => m.otherRevenue), backgroundColor: CHART_COLORS[4] },
     ],
   },
   options: {
@@ -151,11 +232,128 @@ new Chart(document.getElementById('revChart'), {
       tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw)}` } },
     },
     scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => fmt(v) } },
+    },
+  },
+});
+
+// ============ OpEx Chart ============
+new Chart(document.getElementById('opexChart'), {
+  type: 'bar',
+  data: {
+    labels: D.months.map(m => m.label),
+    datasets: [
+      { label: 'COGS', data: D.months.map(m => m.cogs.total), backgroundColor: CHART_COLORS[2] },
+      { label: 'OpEx', data: D.months.map(m => m.opex.total), backgroundColor: CHART_COLORS[5] },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${fmt(ctx.raw)}` } },
+    },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => fmt(v) } },
+    },
+  },
+});
+
+// ============ CapEx Chart ============
+new Chart(document.getElementById('capexChart'), {
+  type: 'bar',
+  data: {
+    labels: D.months.map(m => m.label),
+    datasets: [
+      { label: 'CAPEX', data: D.months.map(m => m.capex), backgroundColor: CHART_COLORS[3] },
+    ],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `CAPEX: ${fmt(ctx.raw)}` } },
+    },
+    scales: {
       x: { grid: { display: false } },
       y: { ticks: { callback: v => fmt(v) } },
     },
   },
 });
+
+// ============ Structure donuts (react to period) ============
+let revStructChart = null, opexStructChart = null;
+
+function renderStructure() {
+  const p = getPeriodSummary(currentPeriod);
+
+  // Revenue structure
+  const revData = [p.revenue, p.otherRevenue];
+  const revLabels = ['Завод', 'Другое направление'];
+
+  if (revStructChart) revStructChart.destroy();
+  revStructChart = new Chart(document.getElementById('revenueStructChart'), {
+    type: 'doughnut',
+    data: {
+      labels: revLabels,
+      datasets: [{ data: revData, backgroundColor: [CHART_COLORS[0], CHART_COLORS[4]], borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.raw)} · ${((ctx.raw / p.totalRevenue) * 100).toFixed(1)}%` } },
+      },
+    },
+  });
+
+  // OpEx structure (COGS + OpEx breakdown)
+  const opexBreakdown = [
+    { name: 'Таможня', value: p.cogs.customs },
+    { name: 'Персонал', value: p.opex.personnel },
+    { name: 'Сырьё', value: p.cogs.raw_materials },
+    { name: 'Упаковка', value: p.cogs.packaging },
+    { name: 'Услуги', value: p.opex.services },
+    { name: 'Фабрика', value: p.opex.factory },
+    { name: 'Доставка', value: p.cogs.shipping },
+    { name: 'Прочие', value: p.opex.other },
+  ];
+  const totalCost = opexBreakdown.reduce((s, x) => s + x.value, 0);
+
+  if (opexStructChart) opexStructChart.destroy();
+  opexStructChart = new Chart(document.getElementById('opexStructChart'), {
+    type: 'doughnut',
+    data: {
+      labels: opexBreakdown.map(x => x.name),
+      datasets: [{ data: opexBreakdown.map(x => x.value), backgroundColor: CHART_COLORS, borderWidth: 2, borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim() }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: { callbacks: { label: ctx => `${ctx.label}: ${fmt(ctx.raw)} · ${((ctx.raw / totalCost) * 100).toFixed(1)}%` } },
+      },
+    },
+  });
+
+  document.getElementById('periodLabel').textContent = periodData[currentPeriod].label;
+}
+
+// ============ Period switcher ============
+document.querySelectorAll('.period-switcher button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.period-switcher button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPeriod = btn.dataset.period;
+    renderKPIs();
+    renderStructure();
+  });
+});
+
+// Initial render
+renderKPIs();
+renderStructure();
 
 // ============ Months table ============
 document.querySelector('#monthsTable tbody').innerHTML = D.months.map(m => {
@@ -175,10 +373,8 @@ document.querySelector('#monthsTable tbody').innerHTML = D.months.map(m => {
 
 // ============ Runway & Priorities ============
 const totalCashEur = D.cashPositions.reduce((s, p) => s + p.eurEquiv, 0);
-// Normalized factory monthly burn (without other direction, without one-off customs backlog)
 const factoryOpCost = latest.cogs.total + latest.opex.total;
 const factoryRev = latest.revenue;
-const factoryCashBurn = Math.max(factoryOpCost - factoryRev, 0); // burn without other-direction support
 const groupNet = latest.totalRevenue - factoryOpCost;
 const runwayMonths = groupNet >= 0 ? Infinity : totalCashEur / Math.abs(groupNet);
 
@@ -235,7 +431,7 @@ document.getElementById('insights').innerHTML = `
     <strong>Главный якорь расходов — таможня при импорте.</strong> В марте €54k = 27% group revenue. Режим IPR (İhracat Rejimi) может срезать до 40% COGS в пиковые месяцы.
   </div>
   <div class="callout red">
-    <strong>60% выручки — связанные стороны.</strong> ФОП Кравченко + ELAN BEAUTY Польша + ELAN COSMETICS Дубаи. Инвестор увидит это как риск концентрации. Цель: &lt;30% related-party к DD.
+    <strong>60% выручки завода — связанные стороны.</strong> ФОП Кравченко + ELAN BEAUTY Польша + ELAN COSMETICS Дубаи. Инвестор увидит это как риск концентрации. Цель: &lt;30% related-party к DD.
   </div>
   <div class="callout green">
     <strong>Собственный бренд — в мае 2026.</strong> Шампунь + гель для душа. Ключевой value-driver. В течение 6 мес после запуска нужно показать traction — это откроет DTC multiple (3–6× revenue).
