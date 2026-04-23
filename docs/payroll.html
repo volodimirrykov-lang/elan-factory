@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Персонал</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style-themes.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="payroll.html" class="active">Персонал</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="group.html">Группа</a>
+    <a href="risk.html">Риски</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Персонал · <em>март 2026</em></h1>
+  <p class="subtitle">Ведомость по ELAN KIMYA Турция. 38 сотрудников, ФОТ €35.7k базовый + бонусы за экспорт. Отдельно 2 менеджера в украинском офисе. Валюта учёта TL, курс 51.10 TL/EUR.</p>
+
+  <div class="grid grid-4" id="kpiRow"></div>
+
+  <h2>Топ-10 по совокупному заработку</h2>
+  <div class="card">
+    <table id="topStaffTable">
+      <thead><tr>
+        <th>Имя</th>
+        <th>Роль</th>
+        <th class="num">Ставка TL</th>
+        <th class="num">Бонус TL</th>
+        <th class="num">Всего TL</th>
+        <th class="num">EUR</th>
+        <th>Note</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>Бонусная схема экспорта</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Получатель</th><th>% от экспорта</th><th>Размер март</th><th>Роль</th></tr></thead>
+      <tbody>
+        <tr><td>Hidayet Şahin + Taner Esirkış</td><td class="num">1.5%</td><td class="num">15 314 TL ÷ 4</td><td>Технологи (экспорт UA/UK)</td></tr>
+        <tr><td>Larisa Isakova (Лена)</td><td class="num">1.5%</td><td class="num">13 695 TL ÷ 4</td><td>Менеджер Украина</td></tr>
+        <tr><td>Vitalii Obukhov</td><td class="num">1.5%</td><td class="num">79 075 TL</td><td>Экспорт/ВЭД · крупнейшие отгрузки</td></tr>
+        <tr><td>Larysa Ivanina</td><td class="num">0.4%</td><td class="num">16 810 TL</td><td>Lab QC / Украина</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Схема:</strong> базовая ставка в TL (турецкий минимум + надбавка) + доплата за еду + бонус 1.5% от экспортной выручки EUR × курс для ключевых людей (Хидает/Танер/Лена/Виталий), 0.4% для Ларисы. В марте экспорт составил €44 289 через таможню + €35 629 приватами.
+    </div>
+  </div>
+
+  <h2>Структура ФОТ</h2>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Разложение (март 2026)</h3>
+      <table>
+        <tr><td>Base ставка 38 чел.</td><td class="num">1 191 800 TL</td><td class="num">€23 323</td></tr>
+        <tr><td>Компенсация за еду</td><td class="num">168 800 TL</td><td class="num">€3 303</td></tr>
+        <tr><td>Бонусы + доплаты</td><td class="num">463 478 TL</td><td class="num">€9 070</td></tr>
+        <tr style="font-weight:600"><td>Итого ФОТ</td><td class="num">1 824 079 TL</td><td class="num">€35 696</td></tr>
+        <tr><td>ЕСВ (SGK) соцвзнос</td><td class="num">70 641 TL</td><td class="num">€1 385</td></tr>
+        <tr><td>Укр. офис (менеджеры)</td><td class="num">—</td><td class="num">€3 045</td></tr>
+        <tr><td>Аренда квартир сотрудников</td><td class="num">—</td><td class="num">€2 994</td></tr>
+        <tr style="font-weight:600"><td>Итого по P&amp;L</td><td class="num">—</td><td class="num">€41 834</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>KPI персонала</h3>
+      <div class="chart-wrap"><canvas id="payChart"></canvas></div>
+    </div>
+  </div>
+
+  <h2>Дешифровка ролей</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Роль</th><th class="num">Чел.</th><th>Комментарий</th></tr></thead>
+      <tbody>
+        <tr><td>Production line (розлив, упаковка)</td><td class="num">~18</td><td>Базовые ставки 28–45k TL, без регулярных бонусов</td></tr>
+        <tr><td>Технологи / QC / лаборатория</td><td class="num">6</td><td>Средние ставки + бонусы за экспорт</td></tr>
+        <tr><td>Менеджмент / ВЭД / админ</td><td class="num">8</td><td>Высокие ставки + export %</td></tr>
+        <tr><td>Украинский офис</td><td class="num">4</td><td>Larisa, Sabina, Tamara, Olena — R&amp;D, дистрибуция, проекты</td></tr>
+        <tr><td>Прочие (уборщицы, водители)</td><td class="num">2</td><td>Минимальные ставки</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout amber">
+    <strong>Зона риска для DD:</strong> 60% бонусного пула идёт на 4 людей (Виталий, Танер+Хидает, Лена, Лариса). Key-person risk. Инвестор захочет golden parachutes / retention bonuses для них перед сделкой.
+  </div>
+  <div class="callout">
+    <strong>Вариантов оптимизации:</strong> (1) часть ФОТ украинского офиса — €3k/мес — можно перевести на ФОП Кравченко как услуги (меньше налогов), (2) бонусы 1.5%×4 человека = 6% экспорта, норма CMO ~3–5% — есть место переговорить.
+  </div>
+</main>
+
+<footer>
+  <div>ELAN Factory · Персонал</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="chart-theme.js"></script>
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+const P = D.payroll;
+const fmt = window.fmtNum;
+document.getElementById('updated').textContent = D.meta.lastUpdate;
+
+// KPI row
+const payrollPctRev = (P.totals.personnel_opex_eur / D.months[D.months.length - 1].revenue) * 100;
+const avgEur = P.totals.grand_total_eur / 38;
+document.getElementById('kpiRow').innerHTML = [
+  { label: 'Штатных', value: '38', sub: '+ 4 в Украине' },
+  { label: 'ФОТ март', value: '€' + (P.totals.grand_total_eur / 1000).toFixed(1) + 'k', sub: '= 1.82M TL' },
+  { label: 'Средняя ЗП', value: '€' + avgEur.toFixed(0), sub: '~' + (avgEur * P.fxTlEur / 1000).toFixed(1) + 'k TL' },
+  { label: 'ФОТ % выручки', value: payrollPctRev.toFixed(0) + '%', sub: 'март (норма CMO 20–25%)', cls: payrollPctRev > 30 ? 'warn' : '' },
+].map(k => `
+  <div class="kpi">
+    <div class="label">${k.label}</div>
+    <div class="value ${k.cls || ''}">${k.value}</div>
+    <div class="sub">${k.sub || ''}</div>
+  </div>`).join('');
+
+// Top staff
+document.querySelector('#topStaffTable tbody').innerHTML = P.staff.slice(0, 10).map(p => `
+  <tr>
+    <td><strong>${p.name}</strong></td>
+    <td>${p.role}</td>
+    <td class="num">${p.rate.toLocaleString('ru-RU')}</td>
+    <td class="num">${p.bonus ? p.bonus.toLocaleString('ru-RU', {maximumFractionDigits: 0}) : '—'}</td>
+    <td class="num">${p.total.toLocaleString('ru-RU', {maximumFractionDigits: 0})}</td>
+    <td class="num">${(p.total / P.fxTlEur).toFixed(0)}</td>
+    <td class="dim">${p.note || ''}</td>
+  </tr>
+`).join('');
+
+// Payroll chart — distribution by role buckets
+new Chart(document.getElementById('payChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Производство', 'Менеджмент/ВЭД', 'Технологи/QC', 'Украинский офис', 'Прочие'],
+    datasets: [{
+      data: [18, 8, 6, 4, 2],
+      backgroundColor: CHART_COLORS.slice(0, 5),
+      borderWidth: 2,
+      borderColor: getComputedStyle(document.documentElement).getPropertyValue('--surface').trim(),
+    }],
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, cutout: '62%',
+    plugins: {
+      legend: { position: 'right' },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.raw} чел.` } },
+    },
+  },
+});
+</script>
+</body>
+</html>

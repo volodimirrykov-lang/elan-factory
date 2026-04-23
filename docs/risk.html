@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Риски</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style-themes.css">
+<script src="theme.js"></script>
+<style>
+  .matrix { display: grid; grid-template-columns: 80px repeat(3, 1fr); gap: 2px; margin: 16px 0; }
+  .matrix > div { padding: 12px; font-size: 12px; min-height: 80px; border: 1px solid var(--border); border-radius: 4px; }
+  .matrix .hdr { background: var(--surface-2); font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; text-align: center; display: flex; align-items: center; justify-content: center; min-height: auto; }
+  .matrix .rlbl { background: var(--surface-2); font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-size: 10px; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; display: flex; align-items: center; justify-content: center; }
+  .matrix .cell-h { background: rgba(176, 50, 50, 0.10); }
+  .matrix .cell-m { background: rgba(166, 106, 10, 0.08); }
+  .matrix .cell-l { background: rgba(26, 122, 68, 0.06); }
+  .matrix .riskid { display: inline-block; font-weight: 600; color: var(--accent); margin-right: 6px; font-family: var(--font-mono); font-size: 11px; }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="payroll.html">Персонал</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="group.html">Группа</a>
+    <a href="risk.html" class="active">Риски</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Риск-регистр · <em>путь к exit</em></h1>
+  <p class="subtitle">Systematic register рисков группы с оценкой probability × impact и планом митигации. Это то, что покажут инвестору/strategic buyer в data room. Регулярно ревьюится — статус обновляется квартально.</p>
+
+  <div class="grid grid-4">
+    <div class="kpi"><div class="label">Высоких</div><div class="value neg">4</div><div class="sub">требуют немедленной митигации</div></div>
+    <div class="kpi"><div class="label">Средних</div><div class="value warn">6</div><div class="sub">мониторим, план готов</div></div>
+    <div class="kpi"><div class="label">Низких</div><div class="value pos">3</div><div class="sub">держим в поле зрения</div></div>
+    <div class="kpi"><div class="label">Всего рисков</div><div class="value">13</div><div class="sub">реестр обновлён 2026-04-23</div></div>
+  </div>
+
+  <h2>Матрица probability × impact</h2>
+  <div class="card">
+    <div class="matrix">
+      <div class="hdr"></div>
+      <div class="hdr">Low impact</div>
+      <div class="hdr">Medium impact</div>
+      <div class="hdr">High impact</div>
+
+      <div class="rlbl">High probability</div>
+      <div class="cell-m"><span class="riskid">R7</span>FX TL-EUR волатильность</div>
+      <div class="cell-h"><span class="riskid">R2</span>Related-party 60% выручки</div>
+      <div class="cell-h"><span class="riskid">R1</span>Таможня backlog</div>
+
+      <div class="rlbl">Med probability</div>
+      <div class="cell-l"><span class="riskid">R10</span>Утечка формул</div>
+      <div class="cell-m"><span class="riskid">R5</span>LUNESI уход<br><span class="riskid">R8</span>Долг китайцам $142k</div>
+      <div class="cell-h"><span class="riskid">R3</span>Бренд провал в мае<br><span class="riskid">R4</span>Нет consolidated P&amp;L</div>
+
+      <div class="rlbl">Low probability</div>
+      <div class="cell-l"><span class="riskid">R13</span>Уход case staff<br><span class="riskid">R11</span>Потеря GMP audit</div>
+      <div class="cell-m"><span class="riskid">R9</span>Регуляторные изменения ЕС<br><span class="riskid">R12</span>Пожар / force majeure</div>
+      <div class="cell-h"><span class="riskid">R6</span>Политический кризис Турция</div>
+    </div>
+  </div>
+
+  <h2>Полный реестр с митигацией</h2>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th>ID</th>
+        <th>Риск</th>
+        <th>Severity</th>
+        <th>Митигация</th>
+        <th>Owner</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>R1</strong></td>
+          <td><strong>Таможня при импорте</strong> — €54k в марте съедает всю операционную маржу</td>
+          <td><span class="pill red">high / high</span></td>
+          <td>Перевод на режим IPR (İhracat Rejimi) — не платить таможню на сырьё под экспортные контракты. Потенциал −€20–40k/мес</td>
+          <td>Уфук / CFO</td>
+        </tr>
+        <tr>
+          <td><strong>R2</strong></td>
+          <td><strong>Related-party 60%</strong> выручки через ФОП/PL/UAE — инвестор видит red flag</td>
+          <td><span class="pill red">high / medium</span></td>
+          <td>Структурировать inter-company как arm's-length контракты с транспортным pricing. Нарастить external revenue до 70%</td>
+          <td>CEO / юрист</td>
+        </tr>
+        <tr>
+          <td><strong>R3</strong></td>
+          <td><strong>Собственный бренд не взлетит</strong> — запуск май'26, критическое окно 6 мес</td>
+          <td><span class="pill red">medium / high</span></td>
+          <td>Готовить Plan B: если CAC/LTV &lt; 1 за 3 мес → sweat equity c-маркетологом или продать IP за seed</td>
+          <td>CMO</td>
+        </tr>
+        <tr>
+          <td><strong>R4</strong></td>
+          <td><strong>Нет consolidated P&amp;L</strong> группы — DD неосуществим</td>
+          <td><span class="pill red">medium / high</span></td>
+          <td>Запросить balance + PnL у всех 4 бухгалтеров до Q3 2026. Консолидация в Excel как минимум</td>
+          <td>CFO</td>
+        </tr>
+        <tr>
+          <td><strong>R5</strong></td>
+          <td><strong>Уход LUNESI</strong> — это топ-1 внешний клиент</td>
+          <td><span class="pill amber">medium / medium</span></td>
+          <td>Диверсифицировать: agresivно качать USUPSO, BILOBROV; искать new UK retailers. Снизить зависимость &lt; 30%</td>
+          <td>Sales</td>
+        </tr>
+        <tr>
+          <td><strong>R6</strong></td>
+          <td><strong>Политический кризис Турция</strong> — санкции, ограничения капитала, локдаун</td>
+          <td><span class="pill amber">low / high</span></td>
+          <td>Второй производственный hub в Польше (ELAN BEAUTY) или Украине через 2-3 года. Сейчас: держать 3 мес cash-резерв вне Турции</td>
+          <td>CEO / Board</td>
+        </tr>
+        <tr>
+          <td><strong>R7</strong></td>
+          <td><strong>FX волатильность TL-EUR</strong> — лира падает, зарплаты в TL, выручка в EUR</td>
+          <td><span class="pill amber">high / low</span></td>
+          <td>Положительный carry (доход EUR, cost TL) — но нужно хеджировать крупные TL payables (тубная машина $43k)</td>
+          <td>CFO</td>
+        </tr>
+        <tr>
+          <td><strong>R8</strong></td>
+          <td><strong>Долг китайским поставщикам $142k</strong> — риск задержки оборудования</td>
+          <td><span class="pill amber">medium / medium</span></td>
+          <td>Закрыть в Q2-Q3 2026 из operating cash или founder capital. Вести еженедельный follow-up</td>
+          <td>CFO / CEO</td>
+        </tr>
+        <tr>
+          <td><strong>R9</strong></td>
+          <td><strong>Регуляторные изменения в ЕС</strong> — новые требования CPNP/Cosmos</td>
+          <td><span class="pill amber">low / medium</span></td>
+          <td>Получить CPNP registration на 10 ключевых SKU. Следить за Regulation (EC) No 1223/2009 обновлениями</td>
+          <td>QC / legal</td>
+        </tr>
+        <tr>
+          <td><strong>R10</strong></td>
+          <td><strong>Утечка формул</strong> — IP riskier чем кажется</td>
+          <td><span class="pill green">medium / low</span></td>
+          <td>NDA с технологами + регистрация trade secrets. R&D документация в запароленных облаках</td>
+          <td>Legal</td>
+        </tr>
+        <tr>
+          <td><strong>R11</strong></td>
+          <td><strong>Потеря GMP audit</strong> — закроются премиум рынки</td>
+          <td><span class="pill green">low / medium</span></td>
+          <td>Регулярные внутренние аудиты, obtain GMP сертификат Q3 2026, ISO 22716 следом</td>
+          <td>QC</td>
+        </tr>
+        <tr>
+          <td><strong>R12</strong></td>
+          <td><strong>Пожар / force majeure</strong> — потеря фабрики</td>
+          <td><span class="pill amber">low / high</span></td>
+          <td>Страхование имущества на $550k (CAPEX + inventory). Business interruption insurance</td>
+          <td>CFO</td>
+        </tr>
+        <tr>
+          <td><strong>R13</strong></td>
+          <td><strong>Уход key personnel</strong> — Виталий, Танер+Хидает, Лена</td>
+          <td><span class="pill green">low / medium</span></td>
+          <td>Retention bonuses / equity для топ-4 людей. Документировать процессы чтоб снизить bus factor</td>
+          <td>HR / CEO</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Топ-3 приоритета на Q2-Q3 2026</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>1. IPR таможенный режим</h3>
+      <p class="muted">Потенциал: −€20–40k/мес COGS. Окно: 2–3 мес на оформление. Самое высокое ROI из всех митигаций.</p>
+    </div>
+    <div class="card">
+      <h3>2. Consolidated P&amp;L группы</h3>
+      <p class="muted">Без этого DD невозможен. Данные запросить у 4 бухгалтеров до сентября. Я собираю в Excel/сайт.</p>
+    </div>
+    <div class="card">
+      <h3>3. Дизайн бренд-запуска</h3>
+      <p class="muted">Май 2026 запуск — critical path. CAC/LTV unit economics должны быть позитивны через 3 мес, иначе revisit стратегию.</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div>ELAN Factory · Риски</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+document.getElementById('updated').textContent = window.ELAN_DATA.meta.lastUpdate;
+</script>
+</body>
+</html>

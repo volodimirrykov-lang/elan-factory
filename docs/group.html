@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ELAN Factory · Группа</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style-themes.css">
+<script src="theme.js"></script>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html"><em>elan</em> factory</a>
+  <nav>
+    <a href="index.html">Cockpit</a>
+    <a href="pnl.html">P&amp;L</a>
+    <a href="clients.html">Клиенты</a>
+    <a href="products.html">Продукты</a>
+    <a href="payroll.html">Персонал</a>
+    <a href="capex.html">CAPEX</a>
+    <a href="cashflow.html">Cash</a>
+    <a href="group.html" class="active">Группа</a>
+    <a href="risk.html">Риски</a>
+    <a href="path.html">Путь к $1B</a>
+    <a href="brain.html">Brain</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Группа · <em>консолидация</em></h1>
+  <p class="subtitle">Четыре юрлица в четырёх странах. Пока дашборд видит только ELAN KIMYA (Турция). Для инвестора нужна картина всей группы с элиминацией внутригрупповых транзакций. Это критический P0-блокер для DD.</p>
+
+  <div class="grid grid-4" id="entityCards"></div>
+
+  <h2>Схема отношений внутри группы</h2>
+  <div class="card">
+    <pre style="white-space:pre-wrap; font-size:12px; line-height:1.8">
+      ┌─────────────────── <strong>ELAN KIMYA A.Ş.</strong> (TR) ───────────────────┐
+      │  Производство (CMO) · Новая фабрика · 38 сотрудников                │
+      │  GMP в процессе · CAPEX цикл завершается                            │
+      └───────┬────────────┬────────────┬────────────┬─────────────────────┘
+              │            │            │            │
+       Отгрузка  Отгрузка  Отгрузка  Отгрузка
+              │            │            │            │
+      ┌───────▼──────┐ ┌───▼──────┐ ┌──▼──────────┐ ┌▼───────────┐
+      │ <strong>ФОП Кравченко</strong> │ │ <strong>ELAN BEAUTY</strong>│ │ <strong>ELAN COSMETICS</strong>│ │ <strong>LUNESI LTD</strong> │
+      │ (Украина)    │ │ (Польша) │ │ (Дубаи)     │ │ (UK · ext.)│
+      │ €45k/мес mar │ │€18k/мес  │ │€3k/мес      │ │€14k/мес    │
+      └──────────────┘ └──────────┘ └─────────────┘ └────────────┘
+
+      Дополнительно: <strong>Касса АГ Кравченко (USD)</strong> — доход от «другого направления»,
+      поступает на кассу одного из учредителей. Не оформлен как inter-company.
+    </pre>
+  </div>
+
+  <h2>Что знаем по каждому юрлицу (март 2026)</h2>
+  <div class="card">
+    <table>
+      <thead><tr>
+        <th>Entity</th>
+        <th>Страна</th>
+        <th>Роль</th>
+        <th class="num">Оборот март</th>
+        <th>Данные</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>ELAN KIMYA A.Ş.</strong></td>
+          <td>🇹🇷 Турция</td>
+          <td>Производство, основное юрлицо</td>
+          <td class="num">€110 593</td>
+          <td><span class="pill green">есть RAPORLAR</span></td>
+        </tr>
+        <tr>
+          <td><strong>ФОП Кравченко</strong></td>
+          <td>🇺🇦 Украина</td>
+          <td>Дистрибьютор, экспорт UA</td>
+          <td class="num">~€45 252*</td>
+          <td><span class="pill red">нет своего P&amp;L</span></td>
+        </tr>
+        <tr>
+          <td><strong>ELAN BEAUTY Spółka</strong></td>
+          <td>🇵🇱 Польша</td>
+          <td>Trading Европа</td>
+          <td class="num">~€18 382*</td>
+          <td><span class="pill red">нет своего P&amp;L</span></td>
+        </tr>
+        <tr>
+          <td><strong>ELAN COSMETICS GEN.</strong></td>
+          <td>🇦🇪 Дубаи</td>
+          <td>MENA регион</td>
+          <td class="num">~€2 729*</td>
+          <td><span class="pill red">нет своего P&amp;L</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout amber">
+      * Оборот — это отгрузки ИЗ ELAN KIMYA В эти юрлица. Их <strong>собственная</strong> выручка от ре-продажи клиентам (маркап, комиссии, розничные наценки) <strong>неизвестна</strong>. Это ключевой gap для инвестора.
+    </div>
+  </div>
+
+  <h2>Что нужно от бухгалтеров группы</h2>
+  <div class="card">
+    <table>
+      <thead><tr><th>Юрлицо</th><th>Что запросить</th><th>К кому</th><th>Срок</th></tr></thead>
+      <tbody>
+        <tr><td>ELAN KIMYA (TR)</td><td>Оборотно-сальдовая ведомость 2026-03-31 + 12 месяцев PnL</td><td>Уфук (мали мушавир)</td><td>1 неделя</td></tr>
+        <tr><td>ФОП Кравченко (UA)</td><td>Декларация доходов 2025, движения по счетам 2026</td><td>ФОП бухгалтер Украина</td><td>2 недели</td></tr>
+        <tr><td>ELAN BEAUTY (PL)</td><td>Bilans + rachunek zysków i strat 2025, 2026 YTD</td><td>Польский księgowy</td><td>2 недели</td></tr>
+        <tr><td>ELAN COSMETICS (AE)</td><td>Financial statements + bank statements</td><td>Дубайский бухгалтер</td><td>2 недели</td></tr>
+        <tr><td>Inter-company transactions</td><td>Полный список перечислений между юрлицами группы 2024-2026</td><td>Совместно</td><td>3 недели</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Что эта страница покажет, когда появятся данные</h2>
+  <div class="grid grid-3">
+    <div class="kpi">
+      <div class="label">Consolidated Revenue</div>
+      <div class="value dim">— скоро</div>
+      <div class="sub">сумма с элиминацией internal</div>
+    </div>
+    <div class="kpi">
+      <div class="label">External Revenue %</div>
+      <div class="value dim">— скоро</div>
+      <div class="sub">ключевая метрика для DD</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Related-party eliminations</div>
+      <div class="value dim">— скоро</div>
+      <div class="sub">сколько «схлопнется» при консолидации</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Почему это важно:</strong> если 60% выручки ELAN KIMYA — это отгрузки в ФОП/Польша/Дубаи, то для <em>внешней</em> оценки группы это internal transfer. Реальная выручка группы — это то, что ФОП / Польша / Дубаи продали <em>третьим лицам</em>. Может оказаться, что реальная внешняя revenue выше €110k/мес (если они держат запас и продают постепенно) или ниже (если запас оседает).
+  </div>
+</main>
+
+<footer>
+  <div>ELAN Factory · Группа</div>
+  <div>обновлено <span id="updated"></span></div>
+</footer>
+
+<script src="data.js"></script>
+<script>
+const D = window.ELAN_DATA;
+document.getElementById('updated').textContent = D.meta.lastUpdate;
+
+document.getElementById('entityCards').innerHTML = [
+  { label: 'Юрлиц в группе', value: '4', sub: 'TR · UA · PL · AE' },
+  { label: 'Стран клиентов', value: '9+', sub: 'UK, PL, UAE, UA, AU, IT, OM, CA, SE' },
+  { label: 'Consolidated P&L', value: 'N/A', sub: 'нет · P0 gap для DD', cls: 'warn' },
+  { label: 'Balance sheet', value: 'N/A', sub: 'нужна выгрузка из 1С', cls: 'warn' },
+].map(k => `
+  <div class="kpi">
+    <div class="label">${k.label}</div>
+    <div class="value ${k.cls || ''}">${k.value}</div>
+    <div class="sub">${k.sub || ''}</div>
+  </div>`).join('');
+</script>
+</body>
+</html>

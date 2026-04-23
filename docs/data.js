@@ -115,6 +115,46 @@ window.ELAN_DATA = {
     { account: "KASA USD", currency: "USD", balance: 2_000, eurEquiv: 1_852 },
   ],
 
+  // Payroll March 2026 — ELAN KIMYA Turkey staff
+  // rate = ставка, comp = компенсация за еду, bonus = доплата, export = бонус за экспорт
+  // Всего в TL, для EUR / ~51.10
+  payroll: {
+    period: "Март 2026",
+    fxTlEur: 51.10,
+    totals: {
+      rate_tl: 1_191_800,   // base salary all staff (TL)
+      comp_tl: 168_800,     // food compensation
+      base_total_tl: 1_360_600,
+      bonus_tl: 463_478.82,
+      grand_total_tl: 1_824_078.82,
+      grand_total_eur: 35_696.27, // 1_824_078 / 51.10
+      sgk_eur: 1_384.86,          // social security
+      personnel_opex_eur: 41_833.51, // total on P&L (incl. taxes, Ukraine office)
+    },
+    // Sample of key staff (full roster is 38)
+    staff: [
+      { name: "Vitalii Obukhov", role: "Экспорт/ВЭД", rate: 42640, comp: 0, bonus: 129075.19, total: 171715.19, note: "+1.5% export bonus" },
+      { name: "Taner Esirkış", role: "Технолог", rate: 44000, comp: 6000, bonus: 35314.35, total: 85314.35, note: "+1.5% export bonus" },
+      { name: "Larysa Ivanina", role: "Technologist / QC", rate: 42640, comp: 0, bonus: 40919.93, total: 83559.93, note: "+0.4% export bonus" },
+      { name: "Osman Aksu", role: "Production manager", rate: 44000, comp: 6000, bonus: 30000, total: 80000 },
+      { name: "Larisa Isakova (UA)", role: "Менеджер Украина", rate: 28200, comp: 6000, bonus: 41835, total: 76035 },
+      { name: "Hidayet Şahin", role: "Старший технолог", rate: 44000, comp: 6000, bonus: 25314.35, total: 75314.35, note: "+1.5% export bonus" },
+      { name: "Leyla Uruşanov", role: "Production", rate: 39000, comp: 6000, bonus: 25000, total: 70000 },
+      { name: "Tamara Vorobeva", role: "Lab / R&D Украина", rate: 42640, comp: 0, bonus: 24110, total: 66750, note: "доплата до $1000" },
+      { name: "Olena Petik", role: "Lab / R&D Украина", rate: 42640, comp: 0, bonus: 24110, total: 66750, note: "доплата до $1500" },
+      { name: "Emre Altan", role: "Production", rate: 44000, comp: 6000, bonus: 15000, total: 65000 },
+      { name: "Vahdettin Bektaş", role: "Production", rate: 28200, comp: 3800, bonus: 24000, total: 56000 },
+      { name: "Yıldırım Yumuşak", role: "Production", rate: 39000, comp: 6000, bonus: 10000, total: 55000 },
+      { name: "Evgeniia Altach", role: "Админ / менеджер", rate: 42640, comp: 0, bonus: 0, total: 42640 },
+      { name: "Önder Öz", role: "Production", rate: 28200, comp: 3800, bonus: 8000, total: 40000 },
+      { name: "Alina Bastık", role: "Production", rate: 39000, comp: 6000, bonus: 0, total: 45000 },
+      { name: "Sabina (UA)", role: "Менеджер Украина", rate: 28200, comp: 6000, bonus: 10800, total: 45000 },
+      // + 22 more staff at base rate without bonuses
+    ],
+    otherStaffCount: 22, // staff at ~32-45k TL base rate without March bonuses
+    otherStaffTotal: 32000 * 14 + 45000 * 6 + 37000 * 2, // approx
+  },
+
   // Product/SKU shipments March 2026 with margins (EUR)
   productShipments: [
     { brand: "USUPSO", sku_count: 7, units: 6645, cost: 8_769.60, price: 23_839.82, markup: 1.72 },
