@@ -5,8 +5,8 @@
  */
 (function () {
   var KEY = 'elan-theme';
-  var THEMES = ['noir', 'porcelain', 'atelier'];
-  var DEFAULT = 'noir';
+  var THEMES = ['porcelain', 'noir', 'atelier'];
+  var DEFAULT = 'porcelain';
 
   function get() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
   function save(t) { try { localStorage.setItem(KEY, t); } catch (e) {} }
@@ -41,8 +41,8 @@
     box.setAttribute('role', 'group');
     box.setAttribute('aria-label', 'Переключить тему');
     box.innerHTML =
-      '<button type="button" data-theme="noir"      title="Noir · сдержанный темный">N</button>' +
       '<button type="button" data-theme="porcelain" title="Porcelain · светлый Tiffany">P</button>' +
+      '<button type="button" data-theme="noir"      title="Noir · сдержанный тёмный">N</button>' +
       '<button type="button" data-theme="atelier"   title="Atelier · editorial luxury">A</button>';
 
     var btns = box.querySelectorAll('button');

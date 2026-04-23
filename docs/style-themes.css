@@ -1,86 +1,55 @@
-/* ELAN Factory — theme overrides via data-theme attribute
-   Base (noir) defined in style.css :root
-   Applies when html[data-theme="tiffany|atelier"] is set */
+/* ELAN Factory — theme overrides
+   Default theme = Porcelain (light) defined in style.css :root
+   Switch to noir (dark) or atelier (editorial) via data-theme attribute */
 
 /* ============================================================
-   THEME · PORCELAIN (Tiffany-inspired, light editorial luxury)
-   Warm white + Tiffany blue + Fraunces serif
+   THEME · NOIR (sophisticated dark)
    ============================================================ */
 
-html[data-theme="porcelain"] {
-  --bg: #faf8f3;
-  --surface: #ffffff;
-  --surface-2: #f2efe7;
-  --surface-3: #ebe7dc;
-  --surface-hover: #f6f3ec;
+html[data-theme="noir"] {
+  --bg: #0a0a0b;
+  --surface: #0f0f11;
+  --surface-2: #161619;
+  --surface-3: #1c1c20;
+  --surface-hover: #1f1f24;
 
-  --border: rgba(26, 22, 18, 0.08);
-  --border-strong: rgba(26, 22, 18, 0.14);
-  --border-soft: rgba(26, 22, 18, 0.05);
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.10);
+  --border-soft: rgba(255, 255, 255, 0.04);
 
-  --text: #1a1612;
-  --text-muted: #4a4239;
-  --text-dim: #7c7264;
-  --text-subtle: #a39889;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  --text-subtle: #52525b;
 
-  --accent: #0abab5;        /* Tiffany blue */
-  --accent-hover: #087a75;
-  --accent-soft: rgba(10, 186, 181, 0.10);
-  --accent-border: rgba(10, 186, 181, 0.24);
+  --accent: #5eead4;
+  --accent-hover: #2dd4bf;
+  --accent-soft: rgba(94, 234, 212, 0.12);
+  --accent-border: rgba(94, 234, 212, 0.24);
 
-  --pos: #1a7a44;
-  --pos-soft: rgba(26, 122, 68, 0.08);
-  --neg: #b03232;
-  --neg-soft: rgba(176, 50, 50, 0.08);
-  --warn: #a66a0a;
-  --warn-soft: rgba(166, 106, 10, 0.08);
-  --info: #1a4a9a;
-  --info-soft: rgba(26, 74, 154, 0.08);
+  --pos: #34d399;
+  --pos-soft: rgba(52, 211, 153, 0.12);
+  --neg: #f87171;
+  --neg-soft: rgba(248, 113, 113, 0.12);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --info: #60a5fa;
+  --info-soft: rgba(96, 165, 250, 0.12);
 
-  --chart-1: #0abab5;
-  --chart-2: #c8a35f;
-  --chart-3: #b03232;
-  --chart-4: #6a4d8a;
-  --chart-5: #1a4a9a;
-  --chart-6: #c76b3a;
-  --chart-7: #9a4d7a;
-  --chart-8: #7a7a7a;
-
-  --font-serif: 'Fraunces', 'Instrument Serif', Georgia, serif;
+  --chart-1: #5eead4;
+  --chart-2: #fbbf24;
+  --chart-3: #f87171;
+  --chart-4: #a78bfa;
+  --chart-5: #60a5fa;
+  --chart-6: #fb923c;
+  --chart-7: #c084fc;
+  --chart-8: #9ca3af;
 }
 
-html[data-theme="porcelain"] body {
+html[data-theme="noir"] body {
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 186, 181, 0.06), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200, 163, 95, 0.05), transparent);
-}
-
-html[data-theme="porcelain"] header {
-  background: rgba(250, 248, 243, 0.88);
-}
-
-html[data-theme="porcelain"] .kpi::before {
-  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.06), transparent);
-}
-
-html[data-theme="porcelain"] h1 {
-  font-weight: 400;
-  letter-spacing: -1.5px;
-}
-
-html[data-theme="porcelain"] tr:hover td {
-  background: rgba(10, 186, 181, 0.03);
-}
-
-html[data-theme="porcelain"] .pill-date,
-html[data-theme="porcelain"] .pill {
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-}
-
-html[data-theme="porcelain"] .card,
-html[data-theme="porcelain"] .kpi,
-html[data-theme="porcelain"] .section {
-  box-shadow: 0 1px 3px rgba(26, 22, 18, 0.04);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(94, 234, 212, 0.05), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(251, 191, 36, 0.03), transparent);
 }
 
 /* ============================================================

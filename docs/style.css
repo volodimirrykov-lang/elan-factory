@@ -3,49 +3,49 @@
    Sophisticated dark mode with warm neutrals and sage accent */
 
 :root {
-  /* Background layers */
-  --bg: #0a0a0b;
-  --surface: #0f0f11;
-  --surface-2: #161619;
-  --surface-3: #1c1c20;
-  --surface-hover: #1f1f24;
+  /* DEFAULT THEME: Porcelain (light) — warm white + Tiffany blue */
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-2: #f3f1eb;
+  --surface-3: #ebe8df;
+  --surface-hover: #f6f4ee;
 
   /* Borders */
-  --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 255, 255, 0.10);
-  --border-soft: rgba(255, 255, 255, 0.04);
+  --border: rgba(26, 22, 18, 0.08);
+  --border-strong: rgba(26, 22, 18, 0.14);
+  --border-soft: rgba(26, 22, 18, 0.05);
 
   /* Text */
-  --text: #fafafa;
-  --text-muted: #a1a1aa;
-  --text-dim: #71717a;
-  --text-subtle: #52525b;
+  --text: #1a1612;
+  --text-muted: #4e4539;
+  --text-dim: #857a6a;
+  --text-subtle: #a89c88;
 
-  /* Accent — sophisticated sage/teal */
-  --accent: #5eead4;
-  --accent-hover: #2dd4bf;
-  --accent-soft: rgba(94, 234, 212, 0.12);
-  --accent-border: rgba(94, 234, 212, 0.24);
+  /* Accent — Tiffany blue */
+  --accent: #0abab5;
+  --accent-hover: #087a75;
+  --accent-soft: rgba(10, 186, 181, 0.10);
+  --accent-border: rgba(10, 186, 181, 0.24);
 
-  /* Semantic */
-  --pos: #34d399;
-  --pos-soft: rgba(52, 211, 153, 0.12);
-  --neg: #f87171;
-  --neg-soft: rgba(248, 113, 113, 0.12);
-  --warn: #fbbf24;
-  --warn-soft: rgba(251, 191, 36, 0.12);
-  --info: #60a5fa;
-  --info-soft: rgba(96, 165, 250, 0.12);
+  /* Semantic (warm, not neon) */
+  --pos: #1a7a44;
+  --pos-soft: rgba(26, 122, 68, 0.08);
+  --neg: #b03232;
+  --neg-soft: rgba(176, 50, 50, 0.08);
+  --warn: #a66a0a;
+  --warn-soft: rgba(166, 106, 10, 0.08);
+  --info: #1a4a9a;
+  --info-soft: rgba(26, 74, 154, 0.08);
 
-  /* Chart palette — curated, muted */
-  --chart-1: #5eead4;
-  --chart-2: #fbbf24;
-  --chart-3: #f87171;
-  --chart-4: #a78bfa;
-  --chart-5: #60a5fa;
-  --chart-6: #fb923c;
-  --chart-7: #c084fc;
-  --chart-8: #9ca3af;
+  /* Chart palette — muted, editorial */
+  --chart-1: #0abab5;
+  --chart-2: #c8a35f;
+  --chart-3: #b03232;
+  --chart-4: #6a4d8a;
+  --chart-5: #1a4a9a;
+  --chart-6: #c76b3a;
+  --chart-7: #9a4d7a;
+  --chart-8: #7a7a7a;
 
   /* Typography */
   --font-serif: 'Instrument Serif', 'Fraunces', Georgia, serif;
@@ -92,26 +92,32 @@ body {
   line-height: 1.55;
   min-height: 100vh;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(94, 234, 212, 0.05), transparent),
-    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(251, 191, 36, 0.03), transparent);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(10, 186, 181, 0.05), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(200, 163, 95, 0.04), transparent);
 }
 
 /* ============ Header ============ */
 
 header {
   position: sticky; top: 0; z-index: 50;
-  background: var(--bg);
+  background: rgba(250, 249, 246, 0.85);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
   border-bottom: 1px solid var(--border);
-  padding: 0 var(--space-10);
-  height: 72px;
-  display: flex; align-items: center; gap: var(--space-8);
+  padding: 0 var(--space-8);
+  height: 64px;
+  display: flex; align-items: center; gap: var(--space-6);
+}
+
+html[data-theme="noir"] header {
+  background: rgba(10, 10, 11, 0.85);
 }
 
 header .logo {
   font-family: var(--font-serif);
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 400;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
   color: var(--text);
   font-style: italic;
   text-decoration: none;
@@ -139,13 +145,13 @@ header nav a {
   position: relative;
   color: var(--text-muted);
   text-decoration: none;
-  padding: 0 var(--space-4);
-  height: 72px;
+  padding: 0 var(--space-3);
+  height: 64px;
   display: flex; align-items: center;
   font-size: 13px;
-  font-weight: 400;
+  font-weight: 500;
   transition: color 0.2s ease;
-  letter-spacing: 0.2px;
+  letter-spacing: -0.1px;
   white-space: nowrap;
 }
 
@@ -182,46 +188,52 @@ main {
   padding: var(--space-12) var(--space-10) var(--space-16);
 }
 
+/* DISPLAY h1 — only decorative serif in the whole system.
+   Everything else is sans-serif Inter for readability. */
 h1 {
   font-family: var(--font-serif);
-  font-size: 56px;
+  font-size: 52px;
   font-weight: 400;
-  letter-spacing: -2px;
+  letter-spacing: -1.8px;
   color: var(--text);
-  line-height: 1;
+  line-height: 1.02;
   margin-bottom: var(--space-4);
 }
 
-h1 em { font-style: italic; color: var(--accent); }
+h1 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 400;
+}
 
 h2 {
-  font-size: 10.5px;
+  font-family: var(--font-sans);
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-dim);
   text-transform: uppercase;
-  letter-spacing: 2.4px;
+  letter-spacing: 1.6px;
   margin: var(--space-12) 0 var(--space-5);
-  position: relative;
   padding-bottom: var(--space-3);
   border-bottom: 1px solid var(--border);
 }
 
 h3 {
+  font-family: var(--font-sans);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text);
   margin-bottom: var(--space-4);
-  letter-spacing: -0.2px;
+  letter-spacing: -0.1px;
 }
 
 .subtitle {
+  font-family: var(--font-sans);
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.65;
-  margin-bottom: var(--space-12);
+  margin-bottom: var(--space-10);
   max-width: 68ch;
-  font-family: var(--font-serif);
-  font-style: italic;
   font-weight: 400;
 }
 
@@ -280,7 +292,7 @@ h3 {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: var(--space-8);
+  padding: var(--space-6);
   transition: border-color 0.2s ease;
 }
 
@@ -307,26 +319,34 @@ h3 {
 .kpi:hover { border-color: var(--border-strong); background: var(--surface-2); }
 
 .kpi .label {
+  font-family: var(--font-sans);
   color: var(--text-dim);
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 1.6px;
+  letter-spacing: 1px;
   margin-bottom: var(--space-3);
 }
 
+/* KPI numbers: sans-serif tabular — finance data must be unambiguous */
 .kpi .value {
-  font-family: var(--font-serif);
-  font-size: 40px;
-  font-weight: 400;
-  letter-spacing: -1.2px;
+  font-family: var(--font-sans);
+  font-size: 30px;
+  font-weight: 500;
+  letter-spacing: -0.8px;
   color: var(--text);
-  line-height: 1;
+  line-height: 1.1;
   font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
+  font-feature-settings: 'tnum', 'cv11';
 }
 
-.kpi .sub { color: var(--text-dim); font-size: 12px; margin-top: var(--space-3); line-height: 1.5; }
+.kpi .sub {
+  font-family: var(--font-sans);
+  color: var(--text-dim);
+  font-size: 12px;
+  margin-top: var(--space-3);
+  line-height: 1.5;
+}
 
 .pos { color: var(--pos); }
 .neg { color: var(--neg); }
