@@ -175,6 +175,7 @@ window.ELAN_DATA = {
       "in": 423507.0,
       "out": 247261.0,
       "ending": 176246.0,
+      "endingSource": "computed",
       "note": "Транш 263k EUR от TG/Гузенко"
     },
     {
@@ -182,7 +183,8 @@ window.ELAN_DATA = {
       "label": "ЯНВАРЬ",
       "in": 236521.0,
       "out": 247395.0,
-      "ending": 165372.0
+      "ending": 165372.0,
+      "endingSource": "computed"
     },
     {
       "month": "2026-02",
@@ -190,6 +192,7 @@ window.ELAN_DATA = {
       "in": 115390.0,
       "out": 77751.0,
       "ending": 203011.0,
+      "endingSource": "computed",
       "note": "Переезд"
     },
     {
@@ -197,7 +200,8 @@ window.ELAN_DATA = {
       "label": "МАРТ",
       "in": 102245.0,
       "out": 92246.0,
-      "ending": 9998.0
+      "ending": 9998.0,
+      "endingSource": "xlsx"
     },
     {
       "month": "2026-04",
@@ -205,6 +209,7 @@ window.ELAN_DATA = {
       "in": 47498.0,
       "out": 47995.0,
       "ending": 9502.0,
+      "endingSource": "computed",
       "note": "Текущий (неполный)"
     }
   ],

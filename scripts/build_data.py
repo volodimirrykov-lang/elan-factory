@@ -116,20 +116,28 @@ def build_month(snapshot: dict, constants: dict, ag_kassa: list) -> dict:
 
 
 def build_ag_kassa(ag_kassa_data: dict, notes: dict) -> list:
+    """Ending balance: если xlsx явно содержит "Переходящий остаток на..." — используем его.
+    Иначе вычисляем: prev_end + in - out. ⚠️ Для Dec-Feb xlsx не всегда даёт явный маркер,
+    вычисленные значения — approximation, не trust для DD."""
     out = []
     prev_end = 0
     for m in ag_kassa_data.get("months", []):
         in_ = m.get("in") or 0
         out_ = m.get("out_total") or 0
-        end = m.get("ending")
-        if end is None:
+        ending_from_xlsx = m.get("ending")
+        if ending_from_xlsx is not None:
+            end = ending_from_xlsx
+            ending_source = "xlsx"
+        else:
             end = prev_end + in_ - out_
+            ending_source = "computed"
         out.append({
             "month": m["month"],
             "label": m.get("sheet", m["month"]),
             "in":     round(in_, 0),
             "out":    round(out_, 0),
             "ending": round(end, 0),
+            "endingSource": ending_source,
             **({"note": notes[m["month"]]} if m["month"] in notes else {}),
         })
         prev_end = end
@@ -231,6 +239,85 @@ def main():
     print(f"Wrote {out_path} ({len(months)} months, {len(ag_kassa_list)} kassa months)")
     for m in months:
         print(f"  {m['month']} [{m['status']:10s}] rev={m['revenue']:>10.0f}  other={m['otherRevenue']:>10.0f}  opProfit={m['opProfit']:>+10.0f}  margin={m['opMargin']*100:+.1f}%")
+
+    # ── Автогенерация knowledge/04_CURRENT_STATE.md ──
+    state_path = os.path.join(ROOT, "knowledge", "04_CURRENT_STATE.md")
+    os.makedirs(os.path.dirname(state_path), exist_ok=True)
+    latest_m = months[-1] if months else None
+    lines = [
+        "# 04 — Current State (автогенерится)",
+        "",
+        f"> Последнее обновление: **{out['meta']['lastUpdate']}**.",
+        f"> Источник: snapshots {', '.join(out['meta']['sourceSnapshots'])}.",
+        f"> Генерируется `scripts/build_data.py`. **Не править руками.**",
+        "",
+        "## Ключевые метрики",
+        "",
+        f"- **Цель**: ${out['meta']['targetValuation']/1e6:.0f}M за {out['meta']['targetYears'][0]}-{out['meta']['targetYears'][1]} лет",
+        f"- **Текущая оценка**: ${out['valuation']['totalLow']/1e6:.0f}–${out['valuation']['totalHigh']/1e6:.0f}M",
+        f"- **Доля Володимира**: {out['meta']['ownerShare']*100:.0f}% (при exit $1B = ${out['meta']['targetValuation']*out['meta']['ownerShare']/1e6:.0f}M)",
+        f"- **Персонал**: ~{out['meta']['headcount']} человек",
+        "",
+    ]
+    if latest_m:
+        lines += [
+            f"## Последний отчёт: {latest_m['label']}",
+            "",
+            f"| Показатель | EUR |",
+            f"|---|---:|",
+            f"| Выручка TR завод | {latest_m['revenue']:>12,.0f} |",
+            f"| Доход другого направления (ФОП/другое) | {latest_m['otherRevenue']:>12,.0f} |",
+            f"| **Total Revenue (группа)** | **{latest_m['totalRevenue']:>12,.0f}** |",
+            f"| COGS (сырьё + упаковка + доставка + таможня) | {latest_m['cogs']['total']:>12,.0f} |",
+            f"| OPEX (фабрика + персонал + услуги + прочее) | {latest_m['opex']['total']:>12,.0f} |",
+            f"| Operating Profit | **{latest_m['opProfit']:>+12,.0f}** |",
+            f"| Operating Margin | **{latest_m['opMargin']*100:+.1f}%** |",
+            f"| CAPEX через opex | {latest_m['capex']:>12,.0f} |",
+            f"| Cash In (ELAN KIMYA) | {latest_m['cashIn']:>12,.0f} |",
+            f"| Cash Out (ELAN KIMYA) | {latest_m['cashOut']:>12,.0f} |",
+            "",
+            "## Топ-5 клиентов",
+            "",
+            "| # | Клиент | Страна | EUR |",
+            "|---:|---|---|---:|",
+        ]
+        for i, c in enumerate(latest_m['clients'][:5], 1):
+            lines.append(f"| {i} | {c['name']} | {c['country']} | {c['amount']:>10,.0f} |")
+        lines.append("")
+
+    # Ag kassa recent
+    if ag_kassa_list:
+        lines += [
+            "## Касса АГ (группа — 'другое направление')",
+            "",
+            "| Месяц | In (EUR) | Out (EUR) | Остаток |",
+            "|---|---:|---:|---:|",
+        ]
+        for k in ag_kassa_list:
+            lines.append(f"| {k['label']} | {k['in']:>10,.0f} | {k['out']:>10,.0f} | {k['ending']:>10,.0f} |")
+        lines.append("")
+
+    # Inventory
+    lines += [
+        "## Склад (последний снапшот)",
+        "",
+        f"- Готовая продукция: **€{inventory.get('finishedGoods', {}).get('value', 0):,.0f}** ({inventory.get('finishedGoods', {}).get('units', 0):,.0f} ед.)",
+        f"- Сырьё: €{inventory.get('rawMaterials', {}).get('value', 0):,.0f}",
+        f"- Упаковка (банки+коробки+этикетки+инструкции): €{inventory.get('packaging_jars', {}).get('value', 0) + inventory.get('packaging_boxes', {}).get('value', 0) + inventory.get('labels', {}).get('value', 0) + inventory.get('instructions', {}).get('value', 0):,.0f}",
+        f"- **Всего: €{inventory.get('total', 0):,.0f}**",
+        "",
+        "## CAPEX",
+        "",
+        f"- Бюджет: ${out['capex']['budget']:,}",
+        f"- Освоено: ${out['capex']['spent']:,}",
+        f"- Остаток бюджета: ${out['capex']['remaining_budget']:,}",
+        f"- **Долг китайским поставщикам: ${out['capex']['pending_to_chinese']:,}**",
+        "",
+    ]
+
+    with open(state_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    print(f"Wrote {state_path}")
 
 
 if __name__ == "__main__":
