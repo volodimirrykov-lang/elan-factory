@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ELAN Factory · Cockpit</title>
+<title>ELAN Factory · Today</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
 <header>
   <a class="logo" href="index.html"><em>elan</em> factory</a>
   <nav>
-    <a href="index.html" class="active">Cockpit</a>
+    <a href="index.html" class="active">Today</a>
     <a href="pnl.html">P&amp;L</a>
     <a href="clients.html">Клиенты</a>
     <a href="products.html">Продукты</a>
@@ -31,7 +31,7 @@
 </header>
 
 <main>
-  <h1>Cockpit</h1>
+  <h1><em>Today</em></h1>
   <p class="subtitle" id="subtitle"></p>
 
   <!-- KPI Grid -->
@@ -81,7 +81,7 @@
 </main>
 
 <footer>
-  <div>ELAN Factory · Cockpit</div>
+  <div>ELAN Factory · Today</div>
   <div>обновлено <span id="updated"></span></div>
 </footer>
 
@@ -132,17 +132,6 @@ const kpis = [
     sub: `${fmtPct(latest.otherRevenue / latest.totalRevenue)} group revenue`,
   },
   { label: 'Инвентарь · Март', value: fmt(D.inventory.total), sub: 'готовая + сырьё + упаковка' },
-  {
-    label: 'Оценка группы',
-    value: '$' + (D.valuation.totalLow / 1e6).toFixed(0) + '–' + (D.valuation.totalHigh / 1e6).toFixed(0) + 'M',
-    sub: 'asset + CMO + brand optionality',
-  },
-  {
-    label: 'Цель 2030–2032',
-    value: '$1B',
-    sub: 'strategic exit через unicorn brand',
-    cls: 'warn',
-  },
 ];
 document.getElementById('kpis').innerHTML = kpis.map(k => `
   <div class="kpi">
@@ -217,20 +206,21 @@ document.getElementById('pathBar').innerHTML = `
     Пройдено ${pctToTarget.toFixed(1)}% · осталось ×${(D.meta.targetValuation / D.valuation.totalHigh).toFixed(0)} роста
   </div>`;
 
+const fmtExit = v => v >= 1e9 ? '$' + (v/1e9).toFixed(1) + 'B' : '$' + (v/1e6).toFixed(0) + 'M';
 document.getElementById('scenarioCards').innerHTML = Object.values(D.scenarios).map(s => `
   <div class="kpi">
     <div class="label">${s.name}</div>
-    <div class="value">$${(s.exitValue / 1e6).toFixed(0)}M</div>
+    <div class="value">${fmtExit(s.exitValue)}</div>
     <div class="sub">вероятность ${fmtPct(s.probability, 0)}</div>
   </div>`).join('');
 
 // ============ Insights ============
 document.getElementById('insights').innerHTML = `
-  <div class="callout">
-    <strong>Февраль → Март — восстановление.</strong> Выручка выросла с €4k до €111k после завершения переезда. Маржа ещё отрицательная из-за бэклога таможни (€54k в марте).
+  <div class="callout green">
+    <strong>Март с учётом группы — positive.</strong> Group revenue €202k (завод €111k + другое направление €91k), operating margin +24%. Завод без «другого» — ещё в минусе из-за бэклога таможни €54k, но это разовое.
   </div>
   <div class="callout amber">
-    <strong>Главный якорь расходов — таможня при импорте.</strong> В марте €54k = 49% выручки. Режим IPR (İhracat Rejimi) может срезать до 40% COGS в пиковые месяцы.
+    <strong>Главный якорь расходов — таможня при импорте.</strong> В марте €54k = 27% group revenue. Режим IPR (İhracat Rejimi) может срезать до 40% COGS в пиковые месяцы.
   </div>
   <div class="callout red">
     <strong>60% выручки — связанные стороны.</strong> ФОП Кравченко + ELAN BEAUTY Польша + ELAN COSMETICS Дубаи. Инвестор увидит это как риск концентрации. Цель: &lt;30% related-party к DD.
